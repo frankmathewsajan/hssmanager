@@ -1,0 +1,21 @@
+{% extends "hsem/cover/layout.html" %}
+{% load static %}
+{% block body %}
+  <main class="px-3">
+    {% if message %}
+    <div>{{ message }}</div>
+    {% endif %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <h3 class="float-start mb-3">Login</h3>
+        <div class="mb-3">
+            <input autofocus type="text" class="form-control" id="username" placeholder="Username" name="username">
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+        </div>
+        <button type="submit" class="btn btn-outline-light float-end">Login</button>
+    </form>
+  </main>
+{% endblock %}
+
