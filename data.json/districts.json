@@ -1,0 +1,108 @@
+[
+    {
+      "model": "hssm.district",
+      "pk": 0,
+      "fields": {
+        "district_name": "Out Of Kerala"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 1,
+      "fields": {
+        "district_name": "Thiruvananthapuram"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 2,
+      "fields": {
+        "district_name": "Kollam"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 3,
+      "fields": {
+        "district_name": "Alappuzha"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 4,
+      "fields": {
+        "district_name": "Pathanamthitta"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 5,
+      "fields": {
+        "district_name": "Kottayam"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 6,
+      "fields": {
+        "district_name": "Idukki"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 7,
+      "fields": {
+        "district_name": "Ernakulam"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 8,
+      "fields": {
+        "district_name": "Thrissur"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 9,
+      "fields": {
+        "district_name": "Palakkad"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 10,
+      "fields": {
+        "district_name": "Malappuram"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 11,
+      "fields": {
+        "district_name": "Kozhikode"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 12,
+      "fields": {
+        "district_name": "Waynad"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 13,
+      "fields": {
+        "district_name": "Kannur"
+      }
+    },
+    {
+      "model": "hssm.district",
+      "pk": 14,
+      "fields": {
+        "district_name": "Kasaragode"
+      }
+    }
+  ]
+  

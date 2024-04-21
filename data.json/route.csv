@@ -1,0 +1,349 @@
+id,name
+1,Muthalakodam
+2,Karimannoor
+3,Chittoor
+4,Manakkad
+5,Ezhalloor
+6,Ezhumuttom
+7,Kanjar
+8,Neyyassery
+9,Vazhithala
+10,Nediyasala
+11,Kolani
+12,Kadalikkad
+13,Vandamattom
+14,Alackode
+15,Kalayanthani
+16,Arakuzha
+17,Pandappilly
+18,Not In List
+19,Avoly
+20,Ayavana
+21,Kunnam
+22,Thodupuzha
+23,Thattakuzha
+24,Vzhakulam
+25,Udumbannoor
+26,Thottumkara
+27,Kodikulam
+28,Ezhalloor-plantation
+29,Nellapara
+30,Vichattukavala
+31,Anakayam
+32,Neeloor
+33,Vazhakulam
+34,Memadangu
+35,Perumbillichira
+36,Vannappuram
+37,Muttom
+38,Edavetty
+39,Madakathanam
+40,Mulapuram
+41,Kaliyar
+42,Kavana
+43,Purapuzha
+44,Meemooty
+45,Kolapra
+46,Amayapra
+47,Kaliyar-plantation
+48,Thudaganad
+49,Koduveli
+50,Koothattukulam
+51,Moolamattom
+52,Udumbanoor
+53,Alakode
+54,Perumattom
+55,Vengalloor
+56,Anchiri
+57,Arikuzha
+58,Neerampuzha
+59,Edakkattukayattom
+60,Panakunnu
+61,Karimkunnam
+62,Kaliyar Estate
+63,Mattathipara
+64,Inchikavu
+65,Kambippalam
+66,Elamdessam
+67,Paynkulam
+68,Keerikodu
+69,Vadakkummury
+70,Kottakavala
+71,Kummamkallu
+72,Mankuzhi
+73,Pannimattom
+74,Kanjaramkavala
+75,Achencavala
+76,Anikad
+77,Avoli
+78,Kalloorkadu
+79,Peringassery
+80,Vettimattom
+81,Thekkinkoottom
+82,Cheenikuzhi
+83,Chenikuzhi
+84,Pannoor
+85,Karikod
+86,Puthuperiyaram
+87,Sasthampara
+88,Chalassery
+89,Kuravilangad
+90,Olamattom
+91,Pazhukkakulam
+92,West Kodikulam
+93,Manjickal
+94,Kudayathoor
+95,Konthalapally
+96,Thalayanad
+97,Thekkumbhagam
+98,Pallipeedia
+99,Kallumari
+100,Kallanickal
+101,Kappithottam
+102,Vazhakulam-vadakodu
+103,Kurusupally
+104,Njarakad
+105,Sankarapilly
+106,Kumamkallu
+107,Kannikattukada
+108,Mrala
+109,Velliyamattom
+110,Panchavadipalam
+111,Parapuzha
+112,Chilavu
+113,Karikode
+114,Melukavumattom
+115,Marthoma
+116,Pattayam Kavala
+117,Poomala
+118,Poochapra
+119,Palakuzha
+120,Kuttappankavala
+121,Poochapra
+122,Pothichottupara
+123,Koovappally
+124,Vannapuram
+125,Narukutty
+126,Nagapuzha
+127,Pallickamuri
+128,Thottakkara
+129,Kumaramangalam
+130,Chunkam
+131,Thennathoor
+132,Chalakkamuku
+133,Kadavoor
+134,Nadukandandam
+135,Nadukandam
+136,Kuninji
+137,Perumankandam
+138,Inchiyani
+139,Malankara
+140,Manchikallu
+141,Methotty
+142,Thommankuthu
+143,Kadumpidy, Mvpa
+144,Pariyaram
+145,Anikuzha
+146,Mundakkallu
+147,Anicadu
+148,Betheleham
+149,Malayinchi
+150,Company
+151,Melukavu
+152,Njarukkutty
+153,Thoudupuzha
+154,Kalloor
+155,Para
+156,Pathakuthy
+157,Mullapuzhachal
+158,Neyyassery Kavala
+159,Vengachuvadu
+160,Mangattu Kavala
+161,Karupara
+162,Vattamattom
+163,Thekkummala Kavala
+164,East Kaloor
+165,Chirakandam
+166,Minipady
+167,Chalamattom
+168,Kurumpupdam
+169,Cheppukulam
+170,Kollppuzha
+171,Parekkavala
+172,Kurumpalamattom
+173,Uppukunnu
+174,Kurumbalamattom
+175,Allkalle
+176,Alkalle
+177,Anikkuzha
+178,Kizhakkenpadam
+179,Ezhanikoottam
+180,Cherady
+181,Mankuzhy
+182,Mannarthara
+183,Unichikavala
+184,Mannarathara
+185,Plantation Jn
+186,Vadamattom
+187,Parekavala
+188,Boundary
+189,Kurukkanadu
+190,Kurubupadom
+191,Kurumbupadom
+192,Kurumbupadam
+193,Mulappuram
+194,Edamaraku
+195,Pooyamkutty
+196,Vellamthanam
+197,Udubannoor
+198,Parakavala
+199,Karimnnoor
+200,Pre-metrical Hostal Karimannoor
+201,Pre-metric Hostal
+202,Pre-metric Hostel Karimannoor
+203,Kambipalm
+204,Thekumbagam
+205,Parappuzha
+206,Mannarthra
+207,Pallikamury
+208,Thommankuhtu
+209,Ambalapady
+210,Olickamattom
+211,Kalaymthani
+212,944
+213,Meenmutty
+214,Kollappuzha
+215,E. Kodikulam
+216,Pullumala
+217,Kurubalamattom
+218,Pallickamury
+219,Cheenikuzhy
+220,Peringasseery
+221,Puthupariyaram
+222,Mangattukavala
+223,Kalanthani
+224,Thattakkuzha
+225,Kodikulam Kavala
+226,Alkallu
+227,Amayappra
+228,Pattayamkavala
+229,Venmattom
+230,Mankulam
+231,Santhanpara
+232,Illichuvadu
+233,Ellichuvadu
+234,Cheenikuzy
+235,Mishiankunnu
+236,Paramada
+237,Krumupadam
+238,Manikunnepeedika
+239,Ancharikavala
+240,Poochappra
+241,Munnar
+242,Bhanumathi
+243,Thekumkottam
+244,Kaurumbalamattom
+245,Neyaasery
+246,Anjari
+247,Ezhanikoottom
+248,Mundanmudy
+249,Assarikunnu
+250,Tkollappuzha
+251,Nakapuzha
+252,Csi Church Cheppukulam
+253,Palakuzhi
+254,Vandamattomm
+255,Cheppukulam Csi Church
+256,Cheruthottumkara, Kunnam
+257,Kurumpdam
+258,Kurumpupadam
+259,Randupalam
+260,Kpallickamuri
+261,Malikathazham
+262,Pallikavala
+263,Kollapuzha
+264,Asanpadi
+265,Boundray
+266,Kaithappara
+267,Dharbhathotty
+268,Assanpady
+269,Udumbannor
+270,Thomankuth
+271,Parakkavala
+272,40 Acre
+273,Moolakkadu
+274,Priyaram
+275,Krumbupadam
+276,Kar
+277,Magattukavala
+278,Ezhanikuttom
+279,Manjikallu
+280,Koduvely
+281,40th Acre
+282,Kurumpadam
+283,Missiomkunnu
+284,Kottakkavala
+285,Alkkallu
+286,Chakkappan Kavala
+287,9495274699
+288,Kolani Kavala
+289,Pazhayamattom, Karimkunnam
+290,Painkulam
+291,Attipady
+292,Koovakandam
+293,Karimannoor Convent Jn
+294,Kaithapra
+295,Palamattom
+296,Madakkathanam
+297,Nadakkal, Thommankuthu
+298,Mavinchuvadu
+299,Darbhathotty
+300,Thenkodu
+301,Palakuzhy
+302,Elamdesam
+303,Karimannoor Pally Pady
+304,Pannor
+305,Naliyani
+306,Winners School
+307,Pazhayara
+308,Anjakkulam
+309,Manarthara
+310,Onichikavala
+311,Onichikavala Neyyassery
+312,Edamaruku
+313,Kuruppumpady
+314,Derbhathotty
+315,Wesst Kodikulam
+316,Kambipalam
+317,Machikallu
+318,Odiyapara
+319,Gulf Ideal Jn
+320,Irampilly
+321,Mullaringadu
+322,Pulickathotty
+323,Mundanmudi
+324,Gulf Nagar
+325,Venmmany
+326,Kaliar
+327,Nirappuzha
+328,Cheenkal City
+329,Purayidamcity
+330,Mundenmudy
+331,Achankavala
+332,Venmattam
+333,Njarakkad
+334,Illichuvade
+335,Ashupatyhri Padi
+336,Ashupathri Padi
+337,Kanjiramkavala
+338,Tiyrampilly
+339,Iyrampilly
+340,Irambilly
+341,Pazhayarikandom
+342,Kodikkulam
+343,Paingottoor
+344,Chalakamuke
+345,Blathikavala
+346,Thennethoor
+347,Napadekar
+348,Mullankuthy

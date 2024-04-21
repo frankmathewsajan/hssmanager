@@ -1,0 +1,385 @@
+{% extends "hssm/layout.html" %}
+{% load static %}
+{% block body %}
+<div class='container px-4 py-5'>
+    <div class="row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title d-flex justify-content-between">Admission Details
+                        <div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="IED">
+                                <label class="form-check-label" for="IED">IED</label>
+                            </div>
+                        </div>
+                    </h5>
+                    <div class="row g-2 text-start mx-1 mt-4">
+
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="AdYear">
+                                <option selected>...</option>
+                                {% for AdYear in AdYears %}
+                                    <option value="{{AdYear}}">{{AdYear}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="AdYear">Admission Year</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="date" class="form-control" id="AdDate" placeholder="dd-mm-yyyy">
+                            <label for="AdDate">Admission Date</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="number" class="form-control" id="AdNum">
+                            <label for="AdNum">Admission Number</label>
+                        </div>
+                    </div>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="AdBranch">
+                                <option selected>...</option>
+                                {% for b in branches %}
+                                    <option value="{{b.code}}">{{b.group}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="AdBranch">Branch</label>
+                        </div>
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="AdClassNow">
+                                <option selected>...</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="AdClassNow">Current Class</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="number" class="form-control" id="RollNumber">
+                            <label for="RollNumber">Roll Number</label>
+                        </div>
+                    </div>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="AdQuota">
+                                <option selected>...</option>
+                                
+                                {% for quota in quotas %}
+                                    <option value="{{quota.id}}">{{quota}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="AdQuota">Quota</label>
+                        </div>
+                        <div class="col-4 form-floating" >
+                            <input type="text" class="form-control" id="IEDRemarks" disabled>
+                            <label for="IEDRemarks">IED Remarks</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="number" class="form-control" id="index">
+                            <label for="index">Index</label>
+                        </div>
+                    </div>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="form-floating col-8">
+                            <select class="form-select" id="PrevSchool">
+                                <option selected>...</option>
+                                {% for school in schools %}
+                                    <option value="{{school.code}}">{{school}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="PrevSchool">Previous School</label>
+                        </div>
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="PrevType">
+                                <option selected>...</option>
+                                <option value="ns">SSLC (NS)</option>
+                                <option value="os">SSLC (OS)</option>
+                                <option value="cbse_icse">CBSE / ICSE</option>
+                            </select>
+                            <label for="PrevType">Study Type</label>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <h5 class="card-title">Personal Details</h5>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="col-8 form-floating">
+                            <input type="text" class="form-control" id="name">
+                            <label for="name">Student Name</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="date" class="form-control" id="dob" placeholder="dd-mm-yyyy">
+                            <label for="dob">Date Of Birth</label>
+                        </div>
+                    </div>
+                    <div class="row g-2 text-start mx-1 my-2">
+                        <div class="form-floating col-3">
+                            <select class="form-select" id="gender">
+                                <option selected>...</option>
+                                <option value="1">Male</option>
+                                <option value="2">Female</option>
+                                <option value="3">Non-Binary</option>
+                            </select>
+                            <label for="gender">Gender</label>
+                        </div>
+                        <div class="form-floating col-3">
+                            <select class="form-select" id="Religion">
+                                <option selected>...</option>
+                                {% for r in religions %}
+                                    <option value="{{r.id}}">{{r}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="Religion">Religion</label>
+                        </div>
+                        <div class="form-floating col-3">
+                            <select class="form-select" id="Caste">
+                                <option selected>...</option>
+                                {% for c in castes %}
+                                    <option value="{{c.id}}" data-community='{{c.community}}'>{{c}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="Caste">Caste</label>
+                        </div>
+                        <div class="form-floating col-3">
+                            <input type="text" class="form-control" id="Community" disabled>
+                            <label for="Community">Community</label>
+                        </div>
+                    </div>
+                    <div class="row g-2 text-start mx-1 my-2">
+                        <div class="form-floating col-3">
+                            <select class="form-select" id="Parish" disabled>
+                                <option selected>...</option>
+                                {% for p in parishes %}
+                                    <option value="{{p.id}}">{{p}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="Parish">Parish</label>
+                        </div>
+
+                        <div class="form-floating col-3">
+                            <select class="form-select" id="Slang">
+                                <option selected>...</option>
+                                
+                                {% for l in slang %}
+                                    <option value="l.id">{{l}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="Slang">Second Lang</label>
+                        </div>
+                        <div class="col-3 form-floating">
+                            <input type="number" class="form-control" id="FeeDue" value="0">
+                            <label for="FeeDue">Fee Due</label>
+                        </div>
+                        <div class="col-3 form-floating">
+                            <input type="number" class="form-control" id="FeePaid" value="0">
+                            <label for="FeePaid">Fee Paid</label>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="col-8 form-floating">
+                            <input type="text" class="form-control" id="idm">
+                            <label for="idm">Identification Mark</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="date" class="form-control" id="dob" placeholder="dd-mm-yyyy">
+                            <label for="dob">Date Of Birth</label>
+                        </div>
+
+                    </div>
+                    <hr>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="col-12 form-floating">
+                            <input type="number" class="form-control" id="aadhar">
+                            <label for="aadhar">Aadhar Number</label>
+                        </div>
+                        <div class="col-6 form-floating">
+                            <input type="number" class="form-control" id="bankNo">
+                            <label for="bankNo">Bank Account Number</label>
+                        </div>
+                        <div class="form-floating col-6">
+                            <select class="form-select" id="bankBranch">
+                                <option selected>...</option>
+                                {% for l in banks %}
+                                    <option value="l.id">{{l}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="bankBranch">Branch</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title d-flex justify-content-between">Parent Details
+                        <div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="guardian">
+                                <label class="form-check-label" for="guardian">Guardian</label>
+                            </div>
+                        </div>
+                    </h5>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="col-8 form-floating">
+                            <input type="number" class="form-control" id="FName">
+                            <label for="FName">Father's Name</label>
+                        </div>
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="FOccupation">
+                                <option selected>...</option>
+                                {% for l in occupations %}
+                                    <option value="l.id">{{l}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="FOccupation">Father's Occupation</label>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="col-8 form-floating">
+                            <input type="number" class="form-control" id="MName">
+                            <label for="MName">Mother's Name</label>
+                        </div>
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="MOccupation">
+                                <option selected>...</option>
+                                {% for l in occupations %}
+                                    <option value="l.id">{{l}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="MOccupation">Mother's Occupation</label>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 text-start mx-1 my-1" hidden id="Guardian">
+                        <div class="col-8 form-floating">
+                            <input type="number" class="form-control" id="GName">
+                            <label for="GName">Guardian's Name</label>
+                        </div>
+                        <div class="form-floating col-4">
+                            <select class="form-select" id="GOccupation">
+                                <option selected>...</option>
+                                {% for l in occupations %}
+                                    <option value="l.id">{{l}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="GOccupation">Guardian's Occupation</label>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5 class="card-title">Address Details</h5>
+                    <div class="row g-2 text-start mx-1 my-1">
+                        <div class="input-group">
+                            <span class="input-group-text">Permanent Address</span>
+                            <textarea class="form-control"></textarea>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-text">Current Address</span>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="tel" class="form-control" id="StudentPhone">
+                            <label for="StudentPhone">Student's Number</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="tel" class="form-control" id="ParentPhone">
+                            <label for="ParentPhone">Parent's Number</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="tel" class="form-control" id="AdditionalPhone">
+                            <label for="AdditionalPhone">Additional Phone Number</label>
+                        </div>
+
+                        <div class="form-floating col-8">
+                            <select class="form-select" id="BusRoute">
+                                <option selected>...</option>
+                                {% for l in routes %}
+                                    <option value="l.id">{{l}}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="BusRoute">Bus Route</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <input type="text" class="form-control" id="RouteRemark">
+                            <label for="RouteRemark">Remarks</label>
+                        </div>
+                        <hr>
+                        <h5 class="card-title">Additional Details</h5>
+                        <div class="row g-2">
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" value="" role="switch" id="fullAPlus">
+                                <label class="form-check-label" for="fullAPlus">
+                                  Full A+
+                                </label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" value="" role="switch" id="passed">
+                                <label class="form-check-label" for="passed">
+                                  Passed HSE
+                                </label>
+                            </div>
+
+                            <div class="col-5 form-floating">
+                                <input type="date" class="form-control" id="TCDate" placeholder="dd-mm-yyyy">
+                                <label for="TCDate">TC Date</label>
+                            </div>
+                            <div class="col-5 form-floating">
+                                <input type="number" class="form-control" id="TCNum">
+                                <label for="TCNum">TC Number</label>
+                            </div>
+                            <div class="col-2 form-floating">
+                                <input type="number" class="form-control" id="TCYear">
+                                <label for="TCYear">TC Year</label>
+                            </div>
+
+                           
+                            <div class="col-5 form-floating">
+                                <input type="date" class="form-control" id="LeavingDate" placeholder="dd-mm-yyyy">
+                                <label for="LeavingDate">Date of Leaving</label>
+                            </div>
+                            <div class="form-floating col-7">
+                                <select class="form-select" id="LeaveReason">
+                                    <option selected>...</option>
+                                    {% for l in statuses %}
+                                        {% if forloop.counter != 1 %}
+                                            <option value="{{ l.id }}">{{ l.student }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <label for="LeaveReason">Reason for Leave</label>
+                            </div>
+                            <div class="col-3 form-floating">
+                                <input type="number" class="form-control" id="CGPA">
+                                <label for="CGPA">CGPA</label>
+                            </div>
+
+                            <div class="form-floating col-7">
+                                <select class="form-select" id="LeavStudyStatuseReason">
+                                    <option selected>...</option>
+                                    {% for l in statuses %}
+                                        <option value="l.id">{{l.student}}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="StudyStatus">Studying Status</label>
+                            </div>
+                            
+                            <div class="col-5 form-floating">
+                                <input type="number" class="form-control" id="HSEReg">
+                                <label for="HSEReg">HSE Register Number</label>
+                            </div>
+
+                            <div class="col-5 form-floating">
+                                <input type="text" class="form-control" id="HSEMonYear" >
+                                <label for="HSEMonYear">HSE Month and Year</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src={% static "hssm/js/data.js" %}></script>
+    {% endblock body %}
