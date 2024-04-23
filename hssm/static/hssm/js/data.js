@@ -1,5 +1,8 @@
 ids = [
     "IED",
+    "CAdd",
+    "CAddress",
+    "PAddress",
     "AdYear",
     "AdDate",
     "AdNum",
@@ -51,7 +54,15 @@ ids = [
     "HSEMonYear"
 ]
 
-
+// fn to get all url query ad set it to ids
+function getQuery() { 
+    const urlParams = new URLSearchParams(window.location.search);
+    ids.forEach(id => {
+        const value = urlParams.get(id);
+        if (value) {
+            document.getElementById(id).value = value;
+        }
+    })};
 function BAlert(message, type) {
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
     const wrapper = document.createElement('div')
@@ -63,10 +74,34 @@ function BAlert(message, type) {
     ].join('')
 
     alertPlaceholder.append(wrapper)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    
+    const AdNumElement = document.getElementById('AdNum');
+    AdNumElement.addEventListener('blur', () => {
+        const AdNum = AdNumElement.value;
+        if (AdNum) {
+            fetch(`/admission/${AdNum}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data['taken']) {
+                        BAlert('Admission Number already in use!!!', 'danger');
+                        AdNumElement.focus();
+                    }
+                });
+        }
+    });
+
+    const elements = document.querySelectorAll('input[id], select[id]');
+    elements.forEach(element => {
+        const id = element.getAttribute('id');
+        if (id !== 'GName' && id !== 'GOccupation') {
+            element.setAttribute('name', id);
+        }
+    });
+
+
 
     const IEDElement = document.getElementById('IED');
     const IEDRemarksElement = document.getElementById('IEDRemarks');
@@ -83,6 +118,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const adDate = document.getElementById('AdDate');
     const today = new Date();
 
+    const AddressToggle = document.getElementById('CAdd');
+
+    AddressToggle.addEventListener('change', () => {
+        
+        if (AddressToggle.checked) {
+            document.getElementById('CAddress').value = document.getElementById('PAddress').value;
+            document.getElementById('CAddress').disabled = true;
+        } else {
+            document.getElementById('CAddress').value = '';
+            document.getElementById('CAddress').disabled = false;
+            document.getElementById('CAddress').focus()
+        }
+    });
 
     IEDElement.addEventListener('change', () => {
         if (IEDElement.checked) {
@@ -95,8 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
     GuardianElement.addEventListener('change', () => {
         if (GuardianElement.checked) {
             GuardianRemarksElement.hidden = false;
+            document.getElementById('GName').setAttribute('name', 'GName');
+            document.getElementById('GOccupation').setAttribute('name', 'GOccupation');
         } else {
             GuardianRemarksElement.hidden = true;
+            document.getElementById('GName').removeAttribute('name')
+            document.getElementById('GOccupation').removeAttribute('name')
         }
     });
 
@@ -132,8 +184,9 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             communityElement.value = '';
             FeeDue.value = 0;
+            casteElement.selectedIndex = -1;
             BAlert('Make sure to select the branch, caste & gender for calculating the fee!!!', 'danger')
-            selectedCaste.options.length = 0;
+            
         }
 
     });

@@ -4,7 +4,14 @@
 
 <div class='container px-4 py-5'>
     <div id="liveAlertPlaceholder"></div>
-    <form class="needs-validation" novalidate></form>
+    {% if message %}
+    <div class="alert alert-{{type}} alert-dismissible" role="alert">
+        <div>{{message}}</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    <form method="post" >
+    {% csrf_token %}
     <div class="row">
         <div class="col-sm-6 mb-3 mb-sm-0">
             <div class="card">
@@ -19,10 +26,10 @@
                     </h5>
                     <div class="row g-2 text-start mx-1 mt-4">
                         <div class="form-floating col-4">
-                            <select class="form-select" id="AdYear" name="AdYear" required></select>
+                            <select class="form-select" id="AdYear" name="AdYear" required>
                                 <option selected>...</option>
                                 {% for AdYear in AdYears %}
-                                <option value="{{AdYear}}">{{AdYear}}</option>
+                                    <option value="{{AdYear}}">{{AdYear}}</option>
                                 {% endfor %}
                             </select>
                             <label for="AdYear">Admission Year</label>
@@ -38,7 +45,7 @@
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-4">
-                            <select class="form-select" id="AdBranch" required>
+                            <select class="form-select" id="AdBranch" name="AdBranch" required>
                                 <option selected>...</option>
                                 {% for b in branches %}
                                 <option value="{{b.code}}">{{b.group}}</option>
@@ -48,19 +55,19 @@
                         </div>
                         {% if not new %}
                         <div class="form-floating col-4">
-                            <input type="text" class="form-control" name="AdClassNow" id="AdClassNow">
+                            <input type="text" class="form-control" name="AdClassNow" id="AdClassNow" disabled>
                             <label for="AdClassNow">Current Class</label>
                         </div>
 
                         <div class="col-4 form-floating">
-                            <input type="number" class="form-control" id="RollNumber">
+                            <input type="number" class="form-control" id="RollNumber" disabled>
                             <label for="RollNumber">Roll Number</label>
                         </div>
                         {% endif %}
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-4">
-                            <select class="form-select" id="AdQuota">
+                            <select class="form-select" id="AdQuota" required>
                                 <option selected>...</option>
 
                                 {% for quota in quotas %}
@@ -74,13 +81,13 @@
                             <label for="IEDRemarks">IED Remarks</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="number" class="form-control" id="index" required>
+                            <input type="number" class="form-control" id="index" min="1" max="10" step="0.001" required>
                             <label for="index">Index</label>
                         </div>
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-8">
-                            <select class="form-select" id="PrevSchool">
+                            <select class="form-select" id="PrevSchool" required>
                                 <option selected>...</option>
                                 {% for school in schools %}
                                 <option value="{{school.code}}">{{school}}</option>
@@ -89,11 +96,11 @@
                             <label for="PrevSchool">Previous School</label>
                         </div>
                         <div class="form-floating col-4">
-                            <select class="form-select" id="PrevType">
+                            <select class="form-select" id="PrevType" required>
                                 <option selected>...</option>
                                 <option value="ns">SSLC (NS)</option>
                                 <option value="os">SSLC (OS)</option>
-                                <option value="cbse_icse">CBSE / ICSE</option>
+                                <option value="ci">CBSE / ICSE</option>
                             </select>
                             <label for="PrevType">Study Type</label>
                         </div>
@@ -103,17 +110,17 @@
                     <h5 class="card-title">Personal Details</h5>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="col-8 form-floating">
-                            <input type="text" class="form-control" id="name">
+                            <input type="text" class="form-control" id="name" required>
                             <label for="name">Student Name</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="date" class="form-control" id="dob" placeholder="dd-mm-yyyy">
+                            <input type="date" class="form-control" id="dob" placeholder="dd-mm-yyyy" required>
                             <label for="dob">Date Of Birth</label>
                         </div>
                     </div>
                     <div class="row g-2 text-start mx-1 my-2">
                         <div class="form-floating col-3">
-                            <select class="form-select" id="gender">
+                            <select class="form-select" id="gender" required>
                                 <option selected>...</option>
                                 {% for g in gender %}
                                 <option value="{{g.id}}">{{g}}</option>
@@ -122,7 +129,7 @@
                             <label for="gender">Gender</label>
                         </div>
                         <div class="form-floating col-3">
-                            <select class="form-select" id="Religion">
+                            <select class="form-select" id="Religion" required>
                                 <option selected>...</option>
                                 {% for r in religions %}
                                 <option value="{{r.id}}">{{r}}</option>
@@ -131,7 +138,7 @@
                             <label for="Religion">Religion</label>
                         </div>
                         <div class="form-floating col-3">
-                            <select class="form-select" id="Caste">
+                            <select class="form-select" id="Caste" required>
                                 <option selected>...</option>
                                 {% for c in castes %}
                                 <option value="{{c.id}}" data-community='{{c.community}}'>{{c}}</option>
@@ -140,7 +147,7 @@
                             <label for="Caste">Caste</label>
                         </div>
                         <div class="form-floating col-3">
-                            <input type="text" class="form-control" id="Community" disabled>
+                            <input type="text" class="form-control" id="Community" disabled required>
                             <label for="Community">Community</label>
                         </div>
                     </div>
@@ -156,51 +163,47 @@
                         </div>
 
                         <div class="form-floating col-3">
-                            <select class="form-select" id="Slang">
+                            <select class="form-select" id="Slang" required>
                                 <option selected>...</option>
 
                                 {% for l in slang %}
-                                <option value="l.id">{{l}}</option>
+                                <option value="{{l.id}}">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="Slang">Second Lang</label>
                         </div>
                         <div class="col-3 form-floating">
-                            <input type="number" class="form-control" id="FeeDue" value="0">
+                            <input type="number" class="form-control" id="FeeDue" value="0" required disabled>
                             <label for="FeeDue">Fee Due</label>
                         </div>
                         <div class="col-3 form-floating">
-                            <input type="number" class="form-control" id="FeePaid" value="0">
+                            <input type="number" class="form-control" id="FeePaid" value="0" required>
                             <label for="FeePaid">Fee Paid</label>
                         </div>
                     </div>
 
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="col-8 form-floating">
-                            <input type="text" class="form-control" id="idm">
+                            <input type="text" class="form-control" id="idm" required>
                             <label for="idm">Identification Mark</label>
-                        </div>
-                        <div class="col-4 form-floating">
-                            <input type="date" class="form-control" id="dob" placeholder="dd-mm-yyyy">
-                            <label for="dob">Date Of Birth</label>
                         </div>
 
                     </div>
                     <hr>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="col-12 form-floating">
-                            <input type="number" class="form-control" id="aadhar">
+                            <input type="number" class="form-control" id="aadhar" required>
                             <label for="aadhar">Aadhar Number</label>
                         </div>
                         <div class="col-6 form-floating">
-                            <input type="number" class="form-control" id="bankNo">
+                            <input type="text" class="form-control" id="bankNo" required>
                             <label for="bankNo">Bank Account Number</label>
                         </div>
                         <div class="form-floating col-6">
-                            <select class="form-select" id="bankBranch">
+                            <select class="form-select" id="bankBranch" required>
                                 <option selected>...</option>
                                 {% for l in banks %}
-                                <option value="l.id">{{l}}</option>
+                                <option value="{{l.id}}">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="bankBranch">Branch</label>
@@ -222,14 +225,14 @@
                     </h5>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="col-8 form-floating">
-                            <input type="number" class="form-control" id="FName">
+                            <input type="text" class="form-control" id="FName" required>
                             <label for="FName">Father's Name</label>
                         </div>
                         <div class="form-floating col-4">
-                            <select class="form-select" id="FOccupation">
+                            <select class="form-select" id="FOccupation" required>
                                 <option selected>...</option>
                                 {% for l in occupations %}
-                                <option value="l.id">{{l}}</option>
+                                <option value="{{l.id}}">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="FOccupation">Father's Occupation</label>
@@ -238,14 +241,14 @@
 
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="col-8 form-floating">
-                            <input type="number" class="form-control" id="MName">
+                            <input type="text" class="form-control" id="MName" required>
                             <label for="MName">Mother's Name</label>
                         </div>
                         <div class="form-floating col-4">
-                            <select class="form-select" id="MOccupation">
+                            <select class="form-select" id="MOccupation" required>
                                 <option selected>...</option>
                                 {% for l in occupations %}
-                                <option value="l.id">{{l}}</option>
+                                <option value="{{l.id}}">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="MOccupation">Mother's Occupation</label>
@@ -254,37 +257,43 @@
 
                     <div class="row g-2 text-start mx-1 my-1" hidden id="Guardian">
                         <div class="col-8 form-floating">
-                            <input type="number" class="form-control" id="GName">
+                            <input type="number" class="form-control" id="GName" name="GName">
                             <label for="GName">Guardian's Name</label>
                         </div>
                         <div class="form-floating col-4">
-                            <select class="form-select" id="GOccupation">
-                                <option selected>...</option>
+                            <select class="form-select" id="GOccupation" name="GOccupation">
+                                <option selected>0</option>
                                 {% for l in occupations %}
-                                <option value="l.id">{{l}}</option>
+                                <option value="{{l.id}}">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="GOccupation">Guardian's Occupation</label>
                         </div>
                     </div>
                     <hr>
-                    <h5 class="card-title">Address Details</h5>
+                    <h5 class="card-title d-flex justify-content-between">Address Details
+                        
+                    </h5>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="input-group">
                             <span class="input-group-text">Permanent Address</span>
-                            <textarea class="form-control"></textarea>
+                            <textarea class="form-control" required id="PAddress" name="PAddress"></textarea>
                         </div>
-
+                        
                         <div class="input-group">
                             <span class="input-group-text">Current Address</span>
-                            <textarea class="form-control"></textarea>
+                            <textarea class="form-control" required id="CAddress" name="CAddress"></textarea>
+                        </div>
+                        <div class="form-check-reverse form-switch">
+                            <label class="form-check-label" for="CAdd">Same as Permanent</label>
+                            <input class="form-check-input" type="checkbox" role="switch" id="CAdd" name="CAdd">
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="tel" class="form-control" id="StudentPhone">
+                            <input type="tel" class="form-control" id="StudentPhone" required>
                             <label for="StudentPhone">Student's Number</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="tel" class="form-control" id="ParentPhone">
+                            <input type="tel" class="form-control" id="ParentPhone" required>
                             <label for="ParentPhone">Parent's Number</label>
                         </div>
                         <div class="col-4 form-floating">
@@ -293,10 +302,10 @@
                         </div>
 
                         <div class="form-floating col-8">
-                            <select class="form-select" id="BusRoute">
+                            <select class="form-select" id="BusRoute" >
                                 <option selected>...</option>
                                 {% for l in routes %}
-                                <option value="l.id">{{l}}</option>
+                                <option value="{{l.id}}">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="BusRoute">Bus Route</label>
@@ -382,6 +391,7 @@
                 </div>
             </div>
             </form>
+            <button class="btn btn-outline-light mt-3 float-end " type="submit">Save and Next <i class="fa-sharp fa-regular fa-floppy-disk-circle-arrow-right"></i></button>
         </div>
     </div>
     {% block scripts %}<script src={% static "hssm/js/data.js" %}></script> {% endblock %}

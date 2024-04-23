@@ -12,7 +12,10 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('settings', views.settings, name='settings'),
 
-    path('student/new', views.data, name='new'),
+    path('student/new', views.new, name='new'),
+    path('student/<int:adNum>', views.view, name='view'),
+
+    path('admission/<int:adNum>', views.admission, name='admission'),
 
     path('fees/<int:special>', views.fees, name='fees')
 ]
