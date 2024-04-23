@@ -1,7 +1,10 @@
 {% extends "hssm/layout.html" %}
 {% load static %}
 {% block body %}
+
 <div class='container px-4 py-5'>
+    <div id="liveAlertPlaceholder"></div>
+    <form class="needs-validation" novalidate></form>
     <div class="row">
         <div class="col-sm-6 mb-3 mb-sm-0">
             <div class="card">
@@ -15,66 +18,63 @@
                         </div>
                     </h5>
                     <div class="row g-2 text-start mx-1 mt-4">
-
                         <div class="form-floating col-4">
-                            <select class="form-select" id="AdYear">
+                            <select class="form-select" id="AdYear" name="AdYear" required></select>
                                 <option selected>...</option>
                                 {% for AdYear in AdYears %}
-                                    <option value="{{AdYear}}">{{AdYear}}</option>
+                                <option value="{{AdYear}}">{{AdYear}}</option>
                                 {% endfor %}
                             </select>
                             <label for="AdYear">Admission Year</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="date" class="form-control" id="AdDate" placeholder="dd-mm-yyyy">
+                            <input type="date" class="form-control" id="AdDate" name="AdDate" placeholder="dd-mm-yyyy" required>
                             <label for="AdDate">Admission Date</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="number" class="form-control" id="AdNum">
+                            <input type="number" class="form-control" id="AdNum" name="AdNum" required>
                             <label for="AdNum">Admission Number</label>
                         </div>
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-4">
-                            <select class="form-select" id="AdBranch">
+                            <select class="form-select" id="AdBranch" required>
                                 <option selected>...</option>
                                 {% for b in branches %}
-                                    <option value="{{b.code}}">{{b.group}}</option>
+                                <option value="{{b.code}}">{{b.group}}</option>
                                 {% endfor %}
                             </select>
                             <label for="AdBranch">Branch</label>
                         </div>
+                        {% if not new %}
                         <div class="form-floating col-4">
-                            <select class="form-select" id="AdClassNow">
-                                <option selected>...</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
+                            <input type="text" class="form-control" name="AdClassNow" id="AdClassNow">
                             <label for="AdClassNow">Current Class</label>
                         </div>
+
                         <div class="col-4 form-floating">
                             <input type="number" class="form-control" id="RollNumber">
                             <label for="RollNumber">Roll Number</label>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-4">
                             <select class="form-select" id="AdQuota">
                                 <option selected>...</option>
-                                
+
                                 {% for quota in quotas %}
-                                    <option value="{{quota.id}}">{{quota}}</option>
+                                <option value="{{quota.id}}">{{quota}}</option>
                                 {% endfor %}
                             </select>
                             <label for="AdQuota">Quota</label>
                         </div>
-                        <div class="col-4 form-floating" >
+                        <div class="col-4 form-floating">
                             <input type="text" class="form-control" id="IEDRemarks" disabled>
                             <label for="IEDRemarks">IED Remarks</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="number" class="form-control" id="index">
+                            <input type="number" class="form-control" id="index" required>
                             <label for="index">Index</label>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                             <select class="form-select" id="PrevSchool">
                                 <option selected>...</option>
                                 {% for school in schools %}
-                                    <option value="{{school.code}}">{{school}}</option>
+                                <option value="{{school.code}}">{{school}}</option>
                                 {% endfor %}
                             </select>
                             <label for="PrevSchool">Previous School</label>
@@ -115,9 +115,9 @@
                         <div class="form-floating col-3">
                             <select class="form-select" id="gender">
                                 <option selected>...</option>
-                                <option value="1">Male</option>
-                                <option value="2">Female</option>
-                                <option value="3">Non-Binary</option>
+                                {% for g in gender %}
+                                <option value="{{g.id}}">{{g}}</option>
+                                {% endfor %}
                             </select>
                             <label for="gender">Gender</label>
                         </div>
@@ -125,7 +125,7 @@
                             <select class="form-select" id="Religion">
                                 <option selected>...</option>
                                 {% for r in religions %}
-                                    <option value="{{r.id}}">{{r}}</option>
+                                <option value="{{r.id}}">{{r}}</option>
                                 {% endfor %}
                             </select>
                             <label for="Religion">Religion</label>
@@ -134,7 +134,7 @@
                             <select class="form-select" id="Caste">
                                 <option selected>...</option>
                                 {% for c in castes %}
-                                    <option value="{{c.id}}" data-community='{{c.community}}'>{{c}}</option>
+                                <option value="{{c.id}}" data-community='{{c.community}}'>{{c}}</option>
                                 {% endfor %}
                             </select>
                             <label for="Caste">Caste</label>
@@ -149,7 +149,7 @@
                             <select class="form-select" id="Parish" disabled>
                                 <option selected>...</option>
                                 {% for p in parishes %}
-                                    <option value="{{p.id}}">{{p}}</option>
+                                <option value="{{p.id}}">{{p}}</option>
                                 {% endfor %}
                             </select>
                             <label for="Parish">Parish</label>
@@ -158,9 +158,9 @@
                         <div class="form-floating col-3">
                             <select class="form-select" id="Slang">
                                 <option selected>...</option>
-                                
+
                                 {% for l in slang %}
-                                    <option value="l.id">{{l}}</option>
+                                <option value="l.id">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="Slang">Second Lang</label>
@@ -200,7 +200,7 @@
                             <select class="form-select" id="bankBranch">
                                 <option selected>...</option>
                                 {% for l in banks %}
-                                    <option value="l.id">{{l}}</option>
+                                <option value="l.id">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="bankBranch">Branch</label>
@@ -229,7 +229,7 @@
                             <select class="form-select" id="FOccupation">
                                 <option selected>...</option>
                                 {% for l in occupations %}
-                                    <option value="l.id">{{l}}</option>
+                                <option value="l.id">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="FOccupation">Father's Occupation</label>
@@ -245,7 +245,7 @@
                             <select class="form-select" id="MOccupation">
                                 <option selected>...</option>
                                 {% for l in occupations %}
-                                    <option value="l.id">{{l}}</option>
+                                <option value="l.id">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="MOccupation">Mother's Occupation</label>
@@ -261,7 +261,7 @@
                             <select class="form-select" id="GOccupation">
                                 <option selected>...</option>
                                 {% for l in occupations %}
-                                    <option value="l.id">{{l}}</option>
+                                <option value="l.id">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="GOccupation">Guardian's Occupation</label>
@@ -296,7 +296,7 @@
                             <select class="form-select" id="BusRoute">
                                 <option selected>...</option>
                                 {% for l in routes %}
-                                    <option value="l.id">{{l}}</option>
+                                <option value="l.id">{{l}}</option>
                                 {% endfor %}
                             </select>
                             <label for="BusRoute">Bus Route</label>
@@ -305,6 +305,7 @@
                             <input type="text" class="form-control" id="RouteRemark">
                             <label for="RouteRemark">Remarks</label>
                         </div>
+                        {% if not new %}
                         <hr>
                         <h5 class="card-title">Additional Details</h5>
                         <div class="row g-2">
@@ -312,13 +313,13 @@
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" value="" role="switch" id="fullAPlus">
                                 <label class="form-check-label" for="fullAPlus">
-                                  Full A+
+                                    Full A+
                                 </label>
                             </div>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" value="" role="switch" id="passed">
                                 <label class="form-check-label" for="passed">
-                                  Passed HSE
+                                    Passed HSE
                                 </label>
                             </div>
 
@@ -335,7 +336,7 @@
                                 <label for="TCYear">TC Year</label>
                             </div>
 
-                           
+
                             <div class="col-5 form-floating">
                                 <input type="date" class="form-control" id="LeavingDate" placeholder="dd-mm-yyyy">
                                 <label for="LeavingDate">Date of Leaving</label>
@@ -344,9 +345,9 @@
                                 <select class="form-select" id="LeaveReason">
                                     <option selected>...</option>
                                     {% for l in statuses %}
-                                        {% if forloop.counter != 1 %}
-                                            <option value="{{ l.id }}">{{ l.student }}</option>
-                                        {% endif %}
+                                    {% if forloop.counter != 1 %}
+                                    <option value="{{ l.id }}">{{ l.student }}</option>
+                                    {% endif %}
                                     {% endfor %}
                                 </select>
                                 <label for="LeaveReason">Reason for Leave</label>
@@ -360,26 +361,29 @@
                                 <select class="form-select" id="LeavStudyStatuseReason">
                                     <option selected>...</option>
                                     {% for l in statuses %}
-                                        <option value="l.id">{{l.student}}</option>
+                                    <option value="l.id">{{l.student}}</option>
                                     {% endfor %}
                                 </select>
                                 <label for="StudyStatus">Studying Status</label>
                             </div>
-                            
+
                             <div class="col-5 form-floating">
                                 <input type="number" class="form-control" id="HSEReg">
                                 <label for="HSEReg">HSE Register Number</label>
                             </div>
 
                             <div class="col-5 form-floating">
-                                <input type="text" class="form-control" id="HSEMonYear" >
+                                <input type="text" class="form-control" id="HSEMonYear">
                                 <label for="HSEMonYear">HSE Month and Year</label>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            </form>
         </div>
     </div>
-    <script src={% static "hssm/js/data.js" %}></script>
+    {% block scripts %}<script src={% static "hssm/js/data.js" %}></script> {% endblock %}
+    
     {% endblock body %}

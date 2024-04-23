@@ -6,8 +6,13 @@ class Quota(models.Model):
     quota = models.CharField(max_length=50)
     def __str__(self):
         return self.quota
+
+class Gender(models.Model):
+    gender = models.CharField(max_length=50)
+    def __str__(self):
+        return self.gender
     
-class Constants(models.Model):
+class Constant(models.Model):
     name = models.CharField(max_length=50)
     value = models.CharField(max_length=50)
 
