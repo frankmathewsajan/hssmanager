@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(response => response.json())
                 .then(data => {
                     if (data['taken']) {
-                        BAlert('Admission Number already in use!!!', 'danger');
+                        BAlert(`Admission Number ${AdNum} already in use!!!`, 'danger');
                         AdNumElement.focus();
                     }
                 });

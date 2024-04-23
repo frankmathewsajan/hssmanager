@@ -25,6 +25,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Reports</a>
                         <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'all' "students" %}">Student Details</a></li>
                           <li><a class="dropdown-item" href="#">TC & Conduct Certificate</a></li>
                           <li><a class="dropdown-item" href="#">Class-Wise Report</a></li>
                           <li><hr class="dropdown-divider"></li>
@@ -34,9 +35,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Data Entry</a>
                         <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="{% url "new"%}">Student Details</a></li>
-                          <li><a class="dropdown-item" href="#">Class Details</a></li>
-                          <li><a class="dropdown-item" href="#">Aadhar & Bank Details</a></li>
+                          <li><a class="dropdown-item" href="{% url  "new" 'student'%}">New Admission</a></li>
+                          
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="#">Staff Details</a></li>
                         </ul>

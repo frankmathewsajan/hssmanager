@@ -25,30 +25,30 @@
                         </div>
                     </h5>
                     <div class="row g-2 text-start mx-1 mt-4">
-                        <div class="form-floating col-4">
-                            <select class="form-select" id="AdYear" name="AdYear" required>
-                                <option selected>...</option>
-                                {% for AdYear in AdYears %}
-                                    <option value="{{AdYear}}">{{AdYear}}</option>
-                                {% endfor %}
-                            </select>
-                            <label for="AdYear">Admission Year</label>
-                        </div>
+                            <div class="form-floating col-4">
+                                <select class="form-select" id="AdYear" name="AdYear" required>
+                                    {% if not student %}<option selected>...</option>{% endif %}
+                                    {% for AdYear in AdYears %}
+                                        <option value="{{AdYear}}" {% if student.AdYear == AdYear %}selected{% endif %}>{{AdYear}}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="AdYear">Admission Year</label>
+                            </div>
                         <div class="col-4 form-floating">
-                            <input type="date" class="form-control" id="AdDate" name="AdDate" placeholder="dd-mm-yyyy" required>
+                            <input type="date" class="form-control" id="AdDate" name="AdDate" placeholder="dd-mm-yyyy" value="{{ student.AdDate }}" required>
                             <label for="AdDate">Admission Date</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="number" class="form-control" id="AdNum" name="AdNum" required>
+                            <input type="number" class="form-control" id="AdNum" name="AdNum" required {% if student %}disabled{% endif %} value={{student.AdNum}}>
                             <label for="AdNum">Admission Number</label>
                         </div>
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-4">
                             <select class="form-select" id="AdBranch" name="AdBranch" required>
-                                <option selected>...</option>
+                                {% if not student %}<option selected>...</option>{% endif %}
                                 {% for b in branches %}
-                                <option value="{{b.code}}">{{b.group}}</option>
+                                <option value="{{b.code}}" {% if student.AdBranch == b.code %}selected{% endif %}>{{b.group}}</option>
                                 {% endfor %}
                             </select>
                             <label for="AdBranch">Branch</label>
@@ -68,10 +68,10 @@
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-4">
                             <select class="form-select" id="AdQuota" required>
-                                <option selected>...</option>
+                                {% if not student %}<option selected>...</option>{% endif %}
 
                                 {% for quota in quotas %}
-                                <option value="{{quota.id}}">{{quota}}</option>
+                                    <option value="{{quota.id}}" {% if student.AdQuota.id == quota.id %}selected{% endif %}>{{quota}}</option>
                                 {% endfor %}
                             </select>
                             <label for="AdQuota">Quota</label>
@@ -81,16 +81,16 @@
                             <label for="IEDRemarks">IED Remarks</label>
                         </div>
                         <div class="col-4 form-floating">
-                            <input type="number" class="form-control" id="index" min="1" max="10" step="0.001" required>
+                            <input type="number" class="form-control" id="index" min="1" max="10" step="0.001" required {% if student %}value={{student.index}}{% endif %}>
                             <label for="index">Index</label>
                         </div>
                     </div>
                     <div class="row g-2 text-start mx-1 my-1">
                         <div class="form-floating col-8">
                             <select class="form-select" id="PrevSchool" required>
-                                <option selected>...</option>
+                                {% if not student %}<option selected>...</option>{% endif %}
                                 {% for school in schools %}
-                                <option value="{{school.code}}">{{school}}</option>
+                                    <option value="{{school.code}}" {% if student.PrevSchool.code == school.code %}selected{% endif %}>{{student.PrevSchool.code}} {{school}}</option>
                                 {% endfor %}
                             </select>
                             <label for="PrevSchool">Previous School</label>

@@ -55,90 +55,125 @@ def fees(request, special=0):
     return JsonResponse(fees, status=200)
 
 
-def view(request, adNum):
-    student = Student.objects.get(AdNum=adNum)
-    return render(request, "hssm/view.html", {"student": student})
-
 
 def admission(_, adNum):
-    return JsonResponse({"taken": True if Student.objects.get(AdNum=adNum) else False})
+    return JsonResponse({"taken": True if Student.objects.get(AdNum=adNum) else False}) 
+
+def view(request, adNum, of):
+    return render(request, "hssm/view.html", {"student": Student.objects.get(AdNum=adNum)})
+    if of == 'student':
+        student = Student.objects.get(AdNum=adNum)
+        return render(request, "hssm/view.html", {"student": student})
 
 
-def new(request):
+
+def all(request, of):
+    if of == 'students':
+        students = Student.objects.all()
+        return render(request, "hssm/all.html", {"students": students})
+
+
+
+def edit(request, adNum, of):
+    if of == 'student':
+        student = Student.objects.get(AdNum=adNum)
+        now = datetime.now().year
+        context = {
+                "new": False,
+                "quotas": Quota.objects.all(),
+                "AdYears": [f"{i}-{(i % 100) + 1}" for i in range(now-5, now+5)],
+                "branches": Group.objects.all(),
+                "schools": School.objects.all(),
+                "religions": Religion.objects.all(),
+                "castes": Caste.objects.all(),
+                "parishes": Parish.objects.all(),
+                "slang": SLang.objects.all(),
+                "banks": Bank.objects.all(),
+                "occupations": Occupation.objects.all(),
+                "routes": BusRoutePlace.objects.all(),
+                "statuses": Status.objects.all(),
+                "gender": Gender.objects.all(),
+                "student": student
+        }
+        return render(request, "hssm/data.html", context)    
+        
+
+def new(request, of):
 
     # import_csv(r"C:\Users\MagnumOpus\OneDrive\Documents\Projects\HSSManagerWeb\data.json\status.csv")
-    now = datetime.now().year
-    context = {
-            "new": True,
-            "quotas": Quota.objects.all(),
-            "AdYears": [f"{i}-{(i % 100) + 1}" for i in range(now-5, now+5)],
-            "branches": Group.objects.all(),
-            "schools": School.objects.all(),
-            "religions": Religion.objects.all(),
-            "castes": Caste.objects.all(),
-            "parishes": Parish.objects.all(),
-            "slang": SLang.objects.all(),
-            "banks": Bank.objects.all(),
-            "occupations": Occupation.objects.all(),
-            "routes": BusRoutePlace.objects.all(),
-            "statuses": Status.objects.all(),
-            "gender": Gender.objects.all()
-    }
-    if request.method == 'POST':
-        form = NewStudentClassForm(request.POST)
-        if form.is_valid():
-            g = form.cleaned_data['GOccupation']
-            try:
-                student = Student(
-                IED=form.cleaned_data['IED'],
-                AdYear=form.cleaned_data['AdYear'],
-                AdDate=form.cleaned_data['AdDate'],
-                AdNum=form.cleaned_data['AdNum'],
-                AdBranch=form.cleaned_data['AdBranch'],
-                AdQuota=form.cleaned_data['AdQuota'],
-                IEDRemarks=form.cleaned_data['IEDRemarks'],
-                index=form.cleaned_data['index'],
-                PrevSchool=form.cleaned_data['PrevSchool'],
-                PrevType=form.cleaned_data['PrevType'],
-                name=form.cleaned_data['name'],
-                dob=form.cleaned_data['dob'],
-                gender=form.cleaned_data['gender'],
-                Religion=form.cleaned_data['Religion'],
-                Caste=form.cleaned_data['Caste'],
-                Parish=form.cleaned_data['Parish'],
-                Slang=form.cleaned_data['Slang'],
-                FeePaid=form.cleaned_data['FeePaid'],
-                idm=form.cleaned_data['idm'],
-                aadhar=form.cleaned_data['aadhar'],
-                bankNo=form.cleaned_data['bankNo'],
-                bankBranch=form.cleaned_data['bankBranch'],
-                guardian=form.cleaned_data['guardian'],
-                FName=form.cleaned_data['FName'],
-                FOccupation=form.cleaned_data['FOccupation'],
-                MName=form.cleaned_data['MName'],
-                MOccupation=form.cleaned_data['MOccupation'],
-                GName=form.cleaned_data['GName'],
-                GOccupation=g if g != '...' else Occupation.objects.get(pk=0),
-                PAddress=form.cleaned_data['PAddress'],
-                CAddress=form.cleaned_data['CAddress'],
-                StudentPhone=form.cleaned_data['StudentPhone'],
-                ParentPhone=form.cleaned_data['ParentPhone'],
-                AdditionalPhone=form.cleaned_data['AdditionalPhone'],
-                BusRoute=form.cleaned_data['BusRoute'],
-                RouteRemark=form.cleaned_data['RouteRemark'],
-            )
-                student.save()
-                context['message'] = "Student added successfully"
-                context['type'] = 'success'
-            except Exception as e:
-                context['message'] = e
+    if of == 'student':
+        now = datetime.now().year
+        context = {
+                "new": True,
+                "quotas": Quota.objects.all(),
+                "AdYears": [f"{i}-{(i % 100) + 1}" for i in range(now-5, now+5)],
+                "branches": Group.objects.all(),
+                "schools": School.objects.all(),
+                "religions": Religion.objects.all(),
+                "castes": Caste.objects.all(),
+                "parishes": Parish.objects.all(),
+                "slang": SLang.objects.all(),
+                "banks": Bank.objects.all(),
+                "occupations": Occupation.objects.all(),
+                "routes": BusRoutePlace.objects.all(),
+                "statuses": Status.objects.all(),
+                "gender": Gender.objects.all()
+        }
+        if request.method == 'POST':
+            form = NewStudentClassForm(request.POST)
+            if form.is_valid():
+                g = form.cleaned_data['GOccupation']
+                try:
+                    student = Student(
+                    IED=form.cleaned_data['IED'],
+                    AdYear=form.cleaned_data['AdYear'],
+                    AdDate=form.cleaned_data['AdDate'],
+                    AdNum=form.cleaned_data['AdNum'],
+                    AdBranch=form.cleaned_data['AdBranch'],
+                    AdQuota=form.cleaned_data['AdQuota'],
+                    IEDRemarks=form.cleaned_data['IEDRemarks'],
+                    index=form.cleaned_data['index'],
+                    PrevSchool=form.cleaned_data['PrevSchool'],
+                    PrevType=form.cleaned_data['PrevType'],
+                    name=form.cleaned_data['name'],
+                    dob=form.cleaned_data['dob'],
+                    gender=form.cleaned_data['gender'],
+                    Religion=form.cleaned_data['Religion'],
+                    Caste=form.cleaned_data['Caste'],
+                    Parish=form.cleaned_data['Parish'],
+                    Slang=form.cleaned_data['Slang'],
+                    FeePaid=form.cleaned_data['FeePaid'],
+                    idm=form.cleaned_data['idm'],
+                    aadhar=form.cleaned_data['aadhar'],
+                    bankNo=form.cleaned_data['bankNo'],
+                    bankBranch=form.cleaned_data['bankBranch'],
+                    guardian=form.cleaned_data['guardian'],
+                    FName=form.cleaned_data['FName'],
+                    FOccupation=form.cleaned_data['FOccupation'],
+                    MName=form.cleaned_data['MName'],
+                    MOccupation=form.cleaned_data['MOccupation'],
+                    GName=form.cleaned_data['GName'],
+                    GOccupation=g if g != '...' else Occupation.objects.get(pk=0),
+                    PAddress=form.cleaned_data['PAddress'],
+                    CAddress=form.cleaned_data['CAddress'],
+                    StudentPhone=form.cleaned_data['StudentPhone'],
+                    ParentPhone=form.cleaned_data['ParentPhone'],
+                    AdditionalPhone=form.cleaned_data['AdditionalPhone'],
+                    BusRoute=form.cleaned_data['BusRoute'],
+                    RouteRemark=form.cleaned_data['RouteRemark'],
+                )
+                    student.save()
+                    context['message'] = "Student added successfully"
+                    context['type'] = 'success'
+                except Exception as e:
+                    context['message'] = e
+                    context['type'] = 'danger'
+                
+                
+                
+            else:
+                context['message'] = form.errors
                 context['type'] = 'danger'
             
-            
-            
-        else:
-            context['message'] = form.errors
-            context['type'] = 'danger'
-        
-    return render(request, "hssm/data.html", context)    
+        return render(request, "hssm/data.html", context)    
         

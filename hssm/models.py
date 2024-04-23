@@ -122,7 +122,7 @@ class Student(models.Model):
     AdQuota = models.ForeignKey(Quota, on_delete=models.CASCADE)
     IEDRemarks = models.CharField(max_length=100, blank=True)
     index = models.FloatField()
-    PrevSchool = models.CharField(max_length=100)  
+    PrevSchool = models.ForeignKey(School, on_delete=models.CASCADE, related_name='prev_school')
     PrevType = models.CharField(max_length=2)
     name = models.CharField(max_length=100)
     dob = models.DateField()
