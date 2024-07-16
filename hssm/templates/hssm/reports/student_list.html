@@ -1,0 +1,33 @@
+{% extends "hssm/reports/report.html" %}
+{% load static %}
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            <th>Sl. No</th>
+            <th>AdNum</th>
+            <th>Name</th>
+            <th>Sex</th>
+            <th>Index</th>
+            {% for day in range10 %}
+                <th>{{ day }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.AdNum }}</td>
+                <td>{{ student.name }}</td>
+                <td>{% if student.gender.gender == 'Male' %}M{% else %}F{% endif %}</td>
+                <td>{{ student.index }}</td>
+                <!-- Adding empty cells for 10 days of attendance -->
+                {% for day in range10 %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock body %}

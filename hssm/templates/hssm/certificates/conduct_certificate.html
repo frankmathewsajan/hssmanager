@@ -1,0 +1,29 @@
+{% extends "hssm/certificates/certificate.html" %}
+{% load static %}
+{% block body %}
+{% for student in students %}
+    <div class="certificate">
+        <h1>CONDUCT CERTIFICATE : ST. MARY’S HSS KALIYAR</h1>
+        <p class="content">
+            TO WHOM IT MAY CONCERN
+        </p>
+        <p class="content">
+            IT IS TO CERTIFY THAT <strong>{{ student.name|upper }}</strong>, AGED {{ student.age }} YEARS, [SON/DAUGHTER] OF <strong>{{ student.FName|default_if_none:student.GName|upper}}</strong>, WHO HAS STUDIED IN
+            THIS SCHOOL, I.E., [NAME OF THE SCHOOL], FROM [START YEAR] TO [END YEAR], DEMONSTRATED [BEHAVIORAL
+            ASSESSMENT] CONDUCT WITH THE TEACHERS AND STUDENTS.
+        </p>
+        <p class="content">
+            THIS INFORMATION PRESENTED HERE IS TRUE AND CORRECT TO THE BEST OF OUR KNOWLEDGE AND BELIEF.
+        </p>
+        <p class="content">
+            DATE : {% now "jS F Y" %}<br>
+            PLACE :<br>
+            UID :
+        </p>
+        <p class="principal">Principle</p>
+    </div>
+
+    <hr>
+
+{% endfor %}
+{% endblock %}

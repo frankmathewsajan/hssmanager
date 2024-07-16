@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as userLogin, logout as userLogout
+from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 
-# Create your views here.
 
 def login(request):
     if request.method == "POST":
@@ -13,7 +12,7 @@ def login(request):
 
         # Check if authentication successful
         if user is not None:
-            userLogin(request, user)
+            user_login(request, user)
             return redirect('index')
         else:
             return render(request, "hssm/login.html", {
@@ -24,9 +23,5 @@ def login(request):
 
 
 def logout(request):
-    userLogout(request)
+    user_logout(request)
     return redirect('index')
-
-
-
-

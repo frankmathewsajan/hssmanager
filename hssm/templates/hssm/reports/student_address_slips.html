@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Address Slips</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 0;
+            font-size: xx-small;
+        }
+
+        .container {
+            max-width: max-content;
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            break-inside: avoid;
+            margin-bottom: 2px;
+        }
+
+        .student-card {
+            flex: 1 1 30%;
+            box-sizing: border-box;
+            padding: 5px;
+            margin-bottom: 2px;
+        }
+
+        .card {
+            border: 1px #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subheader {
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+            }
+            .row {
+                page-break-inside: avoid;
+                break-after: auto;
+                margin-bottom: 0;
+            }
+
+            .student-card:nth-child(9n) {
+                page-break-after: always;
+            }
+
+            .footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                font-size: small;
+                background-color: white;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        {% for student in students %}
+            <div class="student-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="header">{{ student.name }} ({% if student.gender.gender == 'Male' %}S/o{% else %}D/o{% endif %} {{ student.FName }})</div>
+                        <div class="subheader">{{ student.BusRoute|default_if_none:"..." }}</div>
+                        <div>Phone: {{ student.ParentPhone|default_if_none:student.StudentPhone }}</div>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                </div>
+                <div class="row">
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="footer">
+    Admission Year: 2024
+</div>
+</body>
+</html>

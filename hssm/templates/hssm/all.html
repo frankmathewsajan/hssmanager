@@ -1,9 +1,0 @@
-{% extends "hssm/layout.html" %}
-{% load static %}
-{% block body %}
-<div class='container py-5 text-white'>
-    {% for student in students %}
-        <a href="{% url 'view' 'student' student.AdNum %}" class='text-decoration-none text-white'>{{student}}</a>
-    {% endfor %}
-</div>
-{% endblock body %}

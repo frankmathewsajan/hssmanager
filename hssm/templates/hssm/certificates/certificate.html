@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conduct Certificate</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Garet:wght@400;700&display=swap');
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .certificate {
+            width: 80%;
+            max-width: 800px;
+            border: 2px solid black;
+            padding: 40px;
+            background-color: white;
+            margin-bottom: 40px;
+            page-break-inside: avoid !important;
+        }
+
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 19px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .content {
+            font-family: 'Garet', sans-serif;
+            font-size: 15px;
+            text-align: left;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .principal {
+            font-family: 'Garet', sans-serif;
+            font-size: 18px;
+            text-align: right;
+            margin-top: 60px;
+        }
+        
+        @media print {
+            @page {
+                size: A4;
+                margin: 20mm; 
+            }
+
+            body {
+                margin: 0;
+                display: block;
+            }
+
+            .certificate {
+                width: auto;
+                max-width: none;
+                margin-bottom: 0;
+                page-break-after: always; 
+            }
+
+            .certificate:nth-child(odd) {
+                page-break-after: avoid; 
+            }
+        }
+
+    </style>
+</head>
+<body>
+{% block body %} {% endblock %}
+</body>
+</html>

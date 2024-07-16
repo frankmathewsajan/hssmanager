@@ -1,0 +1,71 @@
+{% extends "hssm/layout.html" %}
+{% load static %}
+{% block body %}
+    <div class='container py-5 text-white'>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">
+                        AD:No <i class="fa-regular fa-sort" data-sort="AdNum"></i>
+                    </th>
+                    <th scope="col">Name <i class="fa-regular fa-sort" data-sort="name"></i></th>
+                    <th scope="col" class="d-flex">
+                        <span>
+                            Branch <i class="fa-regular fa-sort" data-sort="AdBranch"></i>
+                        </span>
+                        <select class="form-select form-select-sm w-50 ms-5" aria-label="Branch">
+                            <option selected>Open this select menu</option>
+                            {% for b in branches %}
+                                <option value="{{ b }}" {% if branch == b %}selected{% endif %}>{{ b }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </th>
+                    <th scope="col">Class <i class="fa-regular fa-sort" data-sort="AdClassNow"></i></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for student in students %}
+
+                    <tr data-href="{% url 'view' 'student' student.AdNum %}" style="cursor: pointer">
+                        <th scope="row">{{ student.AdNum }}</th>
+                        <td>{{ student }}</td>
+                        <td>{{ student.AdBranch.group }} {{ student.AdYear }}</td>
+                        <td>{{ student.AdClassNow.code }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <th scope="row">No students, yet.</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Page navigation">
+            <form method="get" action="{% url 'all' "students" %}">
+                <input type="hidden" name='page' value="1">
+                <input type="hidden" name='order' value="{{ order|default:'asc' }}">
+                <input type="hidden" name='target' value="{{ target|default:'name' }}">
+                <input type="hidden" name='branch' value="{{ branch|default:'All' }}">
+            </form>
+            <ul class="pagination">
+
+                {% for i in range %}
+                    <li data-get-page="{{ forloop.counter }}"
+                        class="page-item {% if forloop.counter == page_no %}active{% endif %}">
+                        <a class="page-link" href="#">{{ forloop.counter }}</a>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </nav>
+    </div>
+    {% block scripts %}
+        <script src={% static "hssm/js/all.js" %}></script>
+    {% endblock %}
+
+{% endblock body %}

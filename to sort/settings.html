@@ -1,0 +1,177 @@
+{% extends "hssm/layout.html" %}
+{% load static %}
+{% block body %}
+    <div class="container px-4 py-5 text-white">
+        <div class="row gap-1">
+            <div class="card w-50">
+                <div class="card-body">
+                    <h5 class="card-title">General Info</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">{{ school.name }} 0{{ school.code }}</li>
+                        <li class="list-group-item">USERNAME : {{ user.username }}</li>
+                        <li class="list-group-item">HSSM MAIL : {{ user.email }}</li>
+                        <li class="list-group-item">SCHOOL CODE : {{ school.code }}</li>
+                    </ul>
+                    <br>
+
+                    <a href="#" class="btn btn-outline-danger">Change Password</a>
+                </div>
+            </div>
+            <div class="card col-5">
+                <div class="card-body">
+                    <h5 class="card-title">Fee Details</h5>
+                    <form class="form-floating">
+                        <ul class="list-group list-group-flush">
+                            {% for constant in constants %}
+                                {% if forloop.first or forloop.counter|divisibleby:2 %}
+                                    <li class="list-group-item">
+                                    <div class="row">
+                                {% endif %}
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="constant{{ forloop.counter }}"
+                                           value="{{ constant.value }}">
+                                    <label for="constant{{ forloop.counter }}">{{ constant.name }}</label>
+                                </div>
+                            </div>
+                            {% if forloop.last or not forloop.counter|divisibleby:2 %}
+                                </div>
+                                </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <br>
+                        <a href="#" class="btn btn-outline-primary float-end">Save</a>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="mt-1 row gap-1">
+            <div class="card col-7">
+                <div class="card-body">
+                    <h5 class="card-title d-flex mb-5">
+                        Class Details
+
+                    </h5>
+                    <div class="col-5 float-start">
+                        <select class="form-select" aria-label="Classes">
+                            <option selected>Select the Class</option>
+                            {% for c in classes %}
+                                <option value="{{ c.id }}" {% if class == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <form class="mt-2 form-floating">
+                            <input type="number" class="form-control form-control" id="RoomNumber" value="304">
+                            <label for="RoomNumber">Room Number</label>
+                        </form>
+                    </div>
+                    <div class="col-5 float-end">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Teacher</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Periods</th>
+                                <th scope="col">*</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="table-primary">
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td><i class="fa fa-trash" style="color: red"></i></td>
+                            </tr>
+                            <tr class="table-secondary">
+                                <th scope="row">2</th>
+                                <td>Mark</td>
+                                <td colspan="3">Class Teacher</td>
+                            </tr>
+                            <tr class="table-secondary">
+                                <th scope="row">3</th>
+                                <td>Mark</td>
+                                <td colspan="3">Tutor</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-4">
+                <div class="card-body">
+                    <h5 class="card-title">Assign Class/Division</h5>
+                    <form action="{% url 'assign_classes' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mt-3 form-floating col-6">
+                            <select class="form-select" id="AdYear" name="AdYear" required>
+                                <option selected>...</option>
+                                {% for AdYear in AdYears %}
+                                    <option value="{{ AdYear }}"
+                                            {% if n == AdYear %}selected{% endif %}>{{ AdYear }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="AdYear">Admission Year</label>
+                        </div>
+                        <button class='col-3 btn btn-outline-dark float-end' type="submit">Assign <i
+                                class="fa-sharp fa-light fa-check"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="mt-1 row gap-1">
+            <div class="card col-5">
+                <div class="card-body">
+                    <h5 class="card-title d-flex mb-5">
+                        Subject Combination
+                        <select class="form-select" id="AdBranchNow" name="AdBranchNow" required>
+                            <option selected>...</option>
+                            {% for b in branches %}
+                                <option value="{{ b.id }}"
+                                        {% if b == branch %}selected{% endif %}>{{ b }}</option>
+                            {% endfor %}
+                        </select>
+                    </h5>
+                    <div class="col-5">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Remarks</th>
+                                <th scope="col">*</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for branch in branches %}
+                                <tr class="table-primary">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>Otto</td>
+                                    <td><i class="fa fa-trash" style="color: red"></i></td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card col-4">
+                <div class="card-body">
+                    <h5 class="card-title">Assign Class/Division</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        <script src={% static "hssm/js/settings.js" %}></script>
+    {% endblock %}
+{% endblock body %}

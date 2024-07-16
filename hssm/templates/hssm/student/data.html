@@ -1,0 +1,498 @@
+{% extends "hssm/layout.html" %}
+{% load static %}
+{% block body %}
+
+    <div class='container px-4 py-5'>
+        <div id="liveAlertPlaceholder"></div>
+        {% if message %}
+            <div class="alert alert-{{ type }} alert-dismissible" role="alert" data-dismiss="alert">
+                <div>{{ message }}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        <form method="post" action="
+                {% if new %}{% url  "new" "student" %}{% else %}{% url "edit" "student" student.AdNum %}{% endif %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex justify-content-between">Admission Details
+                                <div class="form-check form-switch">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" maxlength="1" value=0 id="IED">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="IED_toggle"
+                                                {% if student.IED %}
+                                               checked value="True"
+                                                {% else %}
+                                               value="False"
+                                                {% endif %}
+                                        >
+                                        <label class="form-check-label" for="IED_toggle">IED</label>
+                                    </div>
+                                </div>
+                            </h5>
+                            <div class="row g-2 text-start mx-1 mt-4">
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="AdYear" name="AdYear" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for AdYear in AdYears %}
+                                            <option value="{{ AdYear }}"
+                                                    {% if student.AdYear == AdYear %}selected{% endif %}>{{ AdYear }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="AdYear">Admission Year</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="date" class="form-control" id="AdDate" name="AdDate"
+                                           placeholder="dd-mm-yyyy" {% if student %}
+                                           value="{{ student.AdDate|date:"Y-m-d" }}"{% endif %} required>
+                                    <label for="AdDate">Admission Date</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="number" class="form-control" id="AdNum" name="AdNum" required
+                                           value="{{ student.AdNum }}" {% if student %}disabled{% endif %}>
+                                    <label for="AdNum">Admission Number</label>
+                                    {% if student %}
+                                        <input type="hidden" name="AdNum" value="{{ student.AdNum }}">{% endif %}
+                                </div>
+                            </div>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="AdBranch" name="AdBranch" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for b in branches %}
+                                            <option value="{{ b.id }}"
+                                                    {% if student.AdBranch.id == b.id %}selected{% endif %}>{{ b.group }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="AdBranch">Branch</label>
+                                </div>
+                                {% if not new %}
+                                    <div class="form-floating col-4">
+                                        <input type="text" class="form-control" name="AdClassNow" id="AdClassNow"
+                                               disabled>
+                                        <label for="AdClassNow">Current Class</label>
+                                    </div>
+
+                                    <div class="col-4 form-floating">
+                                        <input type="number" class="form-control" id="RollNumber" disabled>
+                                        <label for="RollNumber">Roll Number</label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="AdQuota" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+
+                                        {% for quota in quotas %}
+                                            <option value="{{ quota.id }}"
+                                                    {% if student.AdQuota.id == quota.id %}selected{% endif %}>{{ quota }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="AdQuota">Quota</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="text" class="form-control" id="IEDRemarks" name="IEDRemarks"
+                                            {% if student.IED %}
+                                           value="{{ student.IEDRemarks }}" {% else %}disabled{% endif %} >
+                                    <label for="IEDRemarks">IED Remarks</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="number" class="form-control" id="index" min="1" max="10" step="0.001"
+                                           required {% if student %}value={{ student.index }}{% endif %}>
+                                    <label for="index">Index</label>
+                                </div>
+                            </div>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="form-floating col-8">
+                                    <select class="form-select" id="PrevSchool" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for school in schools %}
+                                            <option value="{{ school.id }}"
+                                                    {% if student.PrevSchool.code == school.code %}selected{% endif %}>{{ school }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="PrevSchool">Previous School</label>
+                                </div>
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="PrevType" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        <option value="ns" {% if student.PrevType == "ns" %}selected{% endif %}>SSLC
+                                            (NS)
+                                        </option>
+                                        <option value="os" {% if student.PrevType == "os" %}selected{% endif %}>SSLC
+                                            (OS)
+                                        </option>
+                                        <option value="ci" {% if student.PrevType == "ci" %}selected{% endif %}>CBSE /
+                                            ICSE
+                                        </option>
+                                    </select>
+                                    <label for="PrevType">Study Type</label>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <h5 class="card-title">Personal Details</h5>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="col-8 form-floating">
+                                    <input type="text" class="form-control" id="name" required
+                                           {% if student %}value="{{ student.name }}"{% endif %}>
+                                    <label for="name">Student Name</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="date" class="form-control" id="dob" placeholder="dd-mm-yyyy" required
+                                           {% if student %}value="{{ student.dob|date:"Y-m-d" }}"{% endif %}>
+                                    <label for="dob">Date Of Birth</label>
+                                </div>
+                            </div>
+                            <div class="row g-2 text-start mx-1 my-2">
+                                <div class="form-floating col-3">
+                                    <select class="form-select" id="gender" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for g in gender %}
+                                            <option value="{{ g.id }}"
+                                                    {% if student.gender.id == g.id %}selected{% endif %}>{{ g }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="gender">Gender</label>
+                                </div>
+                                <div class="form-floating col-3">
+                                    <select class="form-select" id="Religion" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for r in religions %}
+                                            <option value="{{ r.id }}"
+                                                    {% if student.Religion.id == r.id %}selected{% endif %}>{{ r }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="Religion">Religion</label>
+                                </div>
+                                <div class="form-floating col-3">
+                                    <select class="form-select" id="Caste" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for c in castes %}
+                                            <option value="{{ c.id }}" data-community='{{ c.community }}'
+                                                    {% if student.Caste.id == c.id %}selected{% endif %}>{{ c }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="Caste">Caste</label>
+                                </div>
+                                <div class="form-floating col-3">
+                                    <input type="text" class="form-control" id="Community" disabled required
+                                           value="{{ student.Caste.community.community }}">
+                                    <label for="Community">Community</label>
+                                </div>
+                            </div>
+                            <div class="row g-2 text-start mx-1 my-2">
+                                <div class="form-floating col-3">
+                                    <select class="form-select" id="Parish"
+                                            {% if student and student.Religion.id == 2 %}{% else %}disabled{% endif %}>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for p in parishes %}
+                                            <option value="{{ p.id }}"
+                                                    {% if student.Parish.id == p.id %}selected{% endif %}>{{ p }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="Parish">Parish</label>
+                                </div>
+
+                                <div class="form-floating col-3">
+                                    <select class="form-select" id="Slang" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+
+                                        {% for l in slang %}
+                                            <option value="{{ l.id }}"
+                                                    {% if student.Slang.id == l.id %}selected{% endif %}>{{ l }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="Slang">Second Lang</label>
+                                </div>
+                                <div class="col-3 form-floating">
+                                    <input type="number" class="form-control" id="FeeHolder"
+                                           value="{% if student %}{{ student.FeeDue }}{% else %}0{% endif %}" required
+                                           disabled>
+                                    <label>
+                                        <input type="number" name="FeeDue"
+                                               value="{% if student %}{{ student.FeeDue }}{% else %}0{% endif %}"
+                                               hidden>
+                                    </label>
+                                    <label for="FeeHolder">Fee Due</label>
+                                </div>
+                                <div class="col-3 form-floating">
+                                    <input type="number" class="form-control" id="FeePaid"
+                                           value="{% if student %}{{ student.FeePaid }}{% else %}0{% endif %}" required>
+                                    <label for="FeePaid">Fee Paid</label>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="col-8 form-floating">
+                                    <input type="text" class="form-control" id="idm"
+                                           value="{% if student %}{{ student.idm }}{% else %}{% endif %}" required>
+                                    <label for="idm">Identification Mark</label>
+                                </div>
+
+                            </div>
+                            <hr>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="col-12 form-floating">
+                                    <input type="number" class="form-control" id="aadhar"
+                                           value="{% if student %}{{ student.aadhar }}{% else %}0{% endif %}" required>
+                                    <label for="aadhar">Aadhar Number</label>
+                                </div>
+                                <div class="col-6 form-floating">
+                                    <input type="text" class="form-control" id="bankNo"
+                                           value="{% if student %}{{ student.bankNo }}{% else %}0{% endif %}" required>
+                                    <label for="bankNo">Bank Account Number</label>
+                                </div>
+                                <div class="form-floating col-6">
+                                    <select class="form-select" id="bankBranch" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for l in banks %}
+                                            <option value="{{ l.id }}"
+                                                    {% if student.bankBranch.id == l.id %}selected{% endif %}>{{ l }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="bankBranch">Branch</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex justify-content-between">Parent Details
+
+                            </h5>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="col-8 form-floating">
+                                    <input type="text" class="form-control" id="FName"
+                                           value="{% if student %}{{ student.FName }}{% else %}{% endif %}" required>
+                                    <label for="FName">Father's Name</label>
+                                </div>
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="FOccupation" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for l in occupations %}
+                                            <option value="{{ l.id }}"
+                                                    {% if student.FOccupation.id == l.id %}selected{% endif %}>{{ l }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="FOccupation">Father's Occupation</label>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="col-8 form-floating">
+                                    <input type="text" class="form-control" id="MName"
+                                           value="{% if student %}{{ student.MName }}{% else %}{% endif %}" required>
+                                    <label for="MName">Mother's Name</label>
+                                </div>
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="MOccupation" required>
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for l in occupations %}
+                                            <option value="{{ l.id }}"
+                                                    {% if student.MOccupation.id == l.id %}selected{% endif %}>{{ l }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="MOccupation">Mother's Occupation</label>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 text-start mx-1 my-1" id="Guardian">
+                                <div class="col-8 form-floating">
+                                    <input type="text" class="form-control" id="GName" name="GName"
+                                           value="{% if student.GName %}{{ student.GName }}{% else %}{% endif %}">
+                                    <label for="GName">Guardian's Name</label>
+                                </div>
+                                <div class="form-floating col-4">
+                                    <select class="form-select" id="GOccupation" name="GOccupation">
+                                        <option selected>0</option>
+                                        {% for l in occupations %}
+                                            <option value="{{ l.id }}"
+                                                    {% if student.GOccupation.id == l.id %}selected{% endif %}>{{ l }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="GOccupation">Guardian's Occupation</label>
+                                </div>
+                            </div>
+                            <hr>
+                            <h5 class="card-title d-flex justify-content-between">Address Details</h5>
+                            <div class="row g-2 text-start mx-1 my-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Permanent Address</span>
+                                    <label for="PAddress"></label><textarea class="form-control" required id="PAddress"
+                                                                            name="PAddress">{% if student %}
+                                    {{ student.PAddress }}{% endif %}</textarea>
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">Current Address</span>
+                                    <label for="CAddress"></label><textarea class="form-control" required id="CAddress"
+                                                                            name="CAddress">{% if student %}
+                                    {{ student.CAddress }}{% endif %}</textarea>
+                                </div>
+                                <div class="form-check-reverse form-switch">
+                                    <label class="form-check-label" for="CAdd">Same as Permanent</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="CAdd" name="CAdd">
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="tel" class="form-control"
+                                           value="{% if student %}{{ student.StudentPhone }}{% endif %}"
+                                           id="StudentPhone" required>
+                                    <label for="StudentPhone">Student's Number</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="tel" class="form-control"
+                                           value="{% if student %}{{ student.ParentPhone }}{% endif %}" id="ParentPhone"
+                                           required>
+                                    <label for="ParentPhone">Parent's Number</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="tel" class="form-control"
+                                           value="{% if student %}{{ student.AdditionalPhone }}{% endif %}"
+                                           id="AdditionalPhone">
+                                    <label for="AdditionalPhone">Additional Phone Number</label>
+                                </div>
+
+                                <div class="form-floating col-8">
+                                    <select class="form-select" id="BusRoute">
+                                        {% if not student %}
+                                            <option selected>...</option>{% endif %}
+                                        {% for l in routes %}
+                                            <option value="{{ l.id }}"
+                                                    {% if student.BusRoute.id == l.id %}selected{% endif %}>{{ l }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="BusRoute">Bus Route</label>
+                                </div>
+                                <div class="col-4 form-floating">
+                                    <input type="text" class="form-control" id="RouteRemark"
+                                           value="{{ student.RouteRemark }}">
+                                    <label for="RouteRemark">Remarks</label>
+                                </div>
+                                {% if not new %}
+                                    <hr>
+                                    <h5 class="card-title">Additional Details</h5>
+                                    <div class="row g-2">
+
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" maxlength="1" value=0 id="fullAPlus" name="fullAPlus">
+                                            <input class="form-check-input" type="checkbox" value="" role="switch"
+                                                   id="fullAPlus_toggle" name="fullAPlus_toggle"
+                                                   {% if student.fullAPlus %}checked{% endif %}>
+                                            <label class="form-check-label" for="fullAPlus_toggle">
+                                                Full A+
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" maxlength="1" value=0 id="passedHSE" name="passedHSE">
+                                            <input class="form-check-input" type="checkbox" value="" role="switch"
+                                                   id="passedHSE_toggle" name="passedHSE_toggle"
+                                                   {% if student.passedHSE %}checked{% endif %}>
+                                            <label class="form-check-label" for="passedHSE_toggle">
+                                                Passed HSE
+                                            </label>
+                                        </div>
+
+                                        <div class="col-5 form-floating">
+                                            <input type="date" class="form-control" id="TCDate" name="TCDate"
+                                                   placeholder="dd-mm-yyyy"
+                                                    {% if student %}
+                                                   value="{{ student.TCDate|date:"Y-m-d" }}"{% endif %}>
+                                            <label for="TCDate">TC Date</label>
+                                        </div>
+                                        <div class="col-5 form-floating">
+                                            <input type="number" class="form-control" id="TCNum" name="TCNum"
+                                                    {% if student %}
+                                                   value="{{ student.TCNum }}"{% endif %}>
+                                            <label for="TCNum">TC Number</label>
+                                        </div>
+                                        <div class="col-2 form-floating">
+                                            <input type="number" class="form-control" id="TCYear" name="TCYear"
+                                                    {% if student %}
+                                                   value="{{ student.TCYear }}"{% endif %}>
+                                            <label for="TCYear">TC Year</label>
+                                        </div>
+
+
+                                        <div class="col-5 form-floating">
+                                            <input type="date" class="form-control" id="LeavingDate" name="LeavingDate"
+                                                   placeholder="dd-mm-yyyy" {% if student %}
+                                                   value="{{ student.LeavingDate|date:"Y-m-d" }}"{% endif %}>
+                                            <label for="LeavingDate">Date of Leaving</label>
+                                        </div>
+                                        <div class="form-floating col-7">
+                                            <select class="form-select" id="LeaveReason" name="LeaveReason">
+                                                {% if not student %}
+                                                    <option selected>...</option>{% endif %}
+                                                {% for l in statuses %}
+                                                    <option value="{{ l.id }}"
+                                                            {% if student.LeaveReason.id == l.id %}selected{% endif %}>
+                                                        {{ l.student }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="LeaveReason">Reason for Leave</label>
+                                        </div>
+                                        <div class="col-3 form-floating">
+                                            <input type="number" class="form-control" id="CGPA" name="CGPA" min=0 max=10
+                                                   step="0.001" value="{% if student %}{{ student.CGPA }}{% endif %}">
+                                            <label for="CGPA">CGPA</label>
+                                        </div>
+
+                                        <div class="form-floating col-7">
+                                            <select class="form-select" id="StudyStatus" name="StudyStatus">
+                                                {% if not student %}
+                                                    <option selected>...</option>{% endif %}
+                                                {% for l in statuses %}
+                                                    <option value="{{ l.id }}"
+                                                            {% if student.StudyStatus.id == l.id %}selected{% endif %}>
+                                                        {{ l.student }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="StudyStatus">Studying Status</label>
+                                        </div>
+
+                                        <div class="col-5 form-floating">
+                                            <input type="number" class="form-control" id="HSEReg"
+                                                   value="{% if student %}{{ student.HSEReg }}{% endif %}">
+                                            <label for="HSEReg">HSE Register Number</label>
+                                        </div>
+
+                                        <div class="col-5 form-floating">
+                                            <input type="text" class="form-control" id="HSEMonYear" name="HSEMonYear"
+                                                   {% if student.HSEMonYear %}value="{{ student.HSEMonYear }}"{% else %}{% endif %}>
+                                            <label for="HSEMonYear">HSE Month and Year</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+        </form>
+        <button class="btn btn-outline-light mt-3 float-end " type="submit">Save and Next <i
+                class="fa-sharp fa-regular fa-floppy-disk-circle-arrow-right"></i></button>
+    </div>
+    {% block scripts %}
+        <script src={% static "hssm/js/data.js" %}></script>
+    {% endblock %}
+
+{% endblock body %}

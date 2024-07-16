@@ -1,0 +1,40 @@
+{% extends "hssm/certificates/certificate.html" %}
+{% load static %}
+{% block body %}
+    {% for student in students %}
+        <div class="certificate">
+            <h1>IDENTIFICATION CERTIFICATE<br>ST. MARY’S HSS KALIYAR</h1>
+            <strong>Date</strong> : {% now "jS F Y" %}<br>
+            <hr>
+            <div class="content">
+
+                <p>
+                    <strong>Name of Student:</strong> {{ student.name }}
+                </p>
+                <hr>
+                <p >
+                    <span><strong>Admission Number:</strong> {{ student.AdNum }}</span> &emsp;
+                    <span><strong>Sex:</strong> {{ student.gender }}</span> &emsp;
+                    <span><strong>Class:</strong> {{ student.AdClassNow.code }}{{ student.get_year }}</span></p>
+                <hr>
+                <p>
+                    <strong>Date of Birth:</strong> {{ student.dob }}
+                </p>
+                <hr>
+                <p>
+                    <strong>Identification Mark:</strong> {{ student.identification }}
+                </p>
+                <hr>
+                <p>
+                    <strong>Signature of Student</strong>
+                    <strong style="float: right">Principal</strong>
+                </p>
+            </div>
+
+
+        </div>
+
+        <hr>
+
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "hssm/reports/report.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block body %}
+    <style>
+        th, td {
+            width: max-content;
+        }
+    </style>
+    <table>
+
+        <thead>
+        <tr>
+            <th>Sl. No</th>
+            <th>AdNum</th>
+            <th>Name (Sex)</th>
+            <th>Index</th>
+            <th>Parent's Name</th>
+            <th>Parent's Sign</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.AdNum }}</td>
+                <td>{{ student.name }} ({% if student.gender.gender == 'Male' %}M{% else %}F{% endif %})</td>
+                <td>
+                    {{student.index}}</td>
+            <td>
+                    {{student.FName}}</td>
+                <td style="width: 5cm"></td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock body %}

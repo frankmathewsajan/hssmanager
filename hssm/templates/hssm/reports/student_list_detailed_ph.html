@@ -1,0 +1,35 @@
+{% extends "hssm/reports/report.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            <th>Sl. No</th>
+            <th>AdNum</th>
+            <th>Name (Sex)</th>
+            <th>SLang</th>
+            <th>Index</th>
+            <th>Present Ph.</th>
+            <th>Student Ph.</th>
+            <th>Backup Ph.</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.AdNum }}</td>
+                <td>{{ student.name }} ({% if student.gender.gender == 'Male' %}M{% else %}F{% endif %})</td>
+                <td>
+                    {{ student.Slang.language|first }}</td>
+                <td>{{ student.index }}</td>
+                <td>{{ student.ParentPhone }}</td>
+                <td>{{ student.StudentPhone }}</td>
+                <td>{{ student.AdditionalPhone }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock body %}
