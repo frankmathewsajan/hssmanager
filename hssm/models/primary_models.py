@@ -42,6 +42,18 @@ class Teacher(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
 
+class Exam(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, default=1)
+    name = models.CharField(max_length=100)
+    date = models.DateField()
+    max_marks = models.IntegerField()
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.name} {self.date}"
+
+
 class Class(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, default=1)
     code = models.CharField(max_length=2)
@@ -59,7 +71,7 @@ class Class(models.Model):
 class Student(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, default=1)
     IED = models.IntegerField(default=0, null=True, blank=True)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='students')
     AdYear = models.CharField(max_length=7)
     AdDate = models.DateField()
     AdNum = models.IntegerField(unique=False)
@@ -149,3 +161,13 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender} -> {self.receiver}: {self.content[:30]}"

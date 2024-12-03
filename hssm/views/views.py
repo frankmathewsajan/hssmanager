@@ -1,14 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from .util import get_client, current_adyear, distribute_students
 from ..forms import NewStudentClassForm, EditStudentClassForm
 from ..models.primary_models import Quota, Group, School, Occupation, Religion, Caste, Bank, Parish, SLang, \
-    BusRoutePlace, Gender, Student, Class, Constant
+    BusRoutePlace, Gender, Student, Class, Constant, Message
 from ..models.secondary_models import Status
+from .__init__ import generate_html, staff_form
+
 
 
 # Create your views here.
@@ -87,23 +89,64 @@ def assign_classes(request):
         return redirect('index')
 
 
+
+def chat(request):
+    # Get the current user (student)
+    # Get the current user (assumed to be a student)
+    current_user = request.user
+    current_student = Student.objects.get(user=current_user)
+
+    # Get the selected student from the GET request, default to None if not selected
+    selected_student_id = request.GET.get('student_id')
+    selected_student = None
+    messages = []
+
+    if selected_student_id:
+        try:
+            # Fetch the selected student using the ID
+            selected_student = get_object_or_404(Student, id=selected_student_id)
+
+            # Fetch the messages exchanged between the current student and the selected student
+            messages = Message.objects.filter(
+                (Q(sender=current_student) & Q(receiver=selected_student)) |
+                (Q(sender=selected_student) & Q(receiver=current_student))
+            ).order_by('timestamp')
+
+        except Student.DoesNotExist:
+            # Handle case where selected student does not exist
+            selected_student = None
+            messages = []
+
+    # Get the list of all students except the current one
+    students = Student.objects.exclude(id=current_student.id)
+
+    # Render the chat template, passing in the list of students, selected student, and messages
+    return render(request, 'hssm/features/chat.html', {
+        'students': students,
+        'selected_student': selected_student,
+        'messages': messages
+    })
 def index(request):
     if request.user.is_authenticated:
-        context = {
-            "ad_years": current_adyear(True),
-            "this_year": current_adyear(),
-        }
-        if 'message' in request.session:
-            context['message'] = request.session.pop('message')
-        if 'type' in request.session:
-            context['type'] = request.session.pop('type')
-        return render(request, "hssm/index.html", context)
+        if request.user.students.first():
+            print("Student")
+            return render(request, "hssm/student/index.html")
+        else:
+            context = {
+                "ad_years": current_adyear(True),
+                "this_year": current_adyear(),
+            }
+            if 'message' in request.session:
+                context['message'] = request.session.pop('message')
+            if 'type' in request.session:
+                context['type'] = request.session.pop('type')
+            return render(request, "hssm/staff/index.html", context)
     else:
         return render(request, "hssm/welcome.html")
 
 
 @login_required
-def profile(request): return render(request, "hssm/index.html")
+def profile(request): return render(request, "hssm/staff/index.html")
 
 
 @login_required
@@ -289,4 +332,7 @@ def new(request, of, edit=False, adNum=0):
             return redirect('edit', of=of, adNum=adNum)
         return render(request, "hssm/student/data.html", context)
     elif of == 'staff':
-        return render(request, "hssm/staff/data.html")
+        return render(request, "hssm/staff/data.html",
+                      {
+                          'body': generate_html(staff_form)
+                      })

@@ -2,12 +2,13 @@ from django.urls import path
 
 from .views import views, auth, rest
 
-
 urlpatterns = [
     path('login', auth.login, name='login'),
     path('logout', auth.logout, name='logout'),
 
     path('', views.index, name='index'),
+
+    path('chat', views.chat, name='chat'),
     path('profile', views.profile, name='profile'),
     path('settings', views.settings, name='settings'),
 

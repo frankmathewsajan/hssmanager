@@ -18,55 +18,7 @@
     <link href="{% static "hssm/css/style.css" %}" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd;">
-    <div class="container-fluid d-flex justify-space-between">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
-                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarToggler">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!--all/students-->
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/' %}active{% endif %}"
-                       href="{% url 'index' %}">Home</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                       aria-expanded="false">Data Entry</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url  "new" 'student' %}">New Admission</a></li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="{% url  "new" 'staff' %}">Staff Details</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/admin' %}active{% endif %}"
-                       href="{% url 'admin:index' %}">Advanced Settings</a>
-                </li>
-                {% if admin %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Administration</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-        <div>
-                <span class="dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                       aria-expanded="false">{{ user.username }} &nbsp; <i class="fa-duotone fa-user" role='button'></i></a>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{% url "profile" %}">Manage User Data</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item text-danger" href="{% url "logout" %}">Logout</a></li>
-                    </ul>
-                </span>
-        </div>
-    </div>
-</nav>
+{% block nav %} {% endblock %}
 {% block body %} {% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

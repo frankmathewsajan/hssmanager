@@ -1,0 +1,41 @@
+{% extends "hssm/layout.html" %}
+{% load static %}
+{% block nav %}
+<nav class="navbar navbar-expand-lg sticky-top" style="background-color: #e3f2fd;">
+    <div class="container-fluid d-flex justify-space-between">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
+                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!--all/students-->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}"
+                       href="{% url 'index' %}">Home</a>
+                </li>
+
+            </ul>
+        </div>
+        <div>
+                <span class="dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                       aria-expanded="false">
+                        {% if user.students.first %}
+                            {{ user.students.first }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                                            &nbsp; <i class="fa-duotone fa-user" role="button"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url "profile" %}">Manage User Data</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item text-danger" href="{% url "logout" %}">Logout</a></li>
+                    </ul>
+                </span>
+        </div>
+    </div>
+</nav>
+{% endblock %}

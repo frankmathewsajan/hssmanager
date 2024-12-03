@@ -13,6 +13,7 @@ def login(request):
         # Check if authentication successful
         if user is not None:
             user_login(request, user)
+            print(user)
             return redirect('index')
         else:
             return render(request, "hssm/login.html", {

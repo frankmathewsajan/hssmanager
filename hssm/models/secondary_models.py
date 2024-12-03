@@ -163,8 +163,6 @@ class Client(models.Model):
             else:
                 print(f'user for {student.name} already exists: username: {new_username}')
 
-
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.user:
@@ -175,3 +173,5 @@ class Client(models.Model):
 
     def __str__(self):
         return self.school.name
+
+

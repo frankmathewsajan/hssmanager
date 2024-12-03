@@ -1,0 +1,127 @@
+{% extends "hssm/student/layout.html" %}
+{% load static %}
+{% block body %}
+    <style>
+        li a, li form a {
+            text-decoration: none;
+            color: #1cabc4;
+        }
+
+        .card {
+            background-color: #2c3e50;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #1cabc4;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+
+
+        .message-links ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .message-links ul li {
+            margin: 10px 0;
+        }
+    </style>
+
+    <div class="container my-5 text-white">
+        <!-- Recent Notifications Section - Now at the top -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">Recent Notifications</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><a href="#">New assignment posted in Mathematics</a></li>
+                            <li><a href="#">School event: Science Fair on October 15th</a></li>
+                            <li><a href="#">PTA Meeting on October 20th</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marks View Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Your Marks</div>
+                    <div class="card-body">
+                        <p>View your marks:</p>
+                        <ul>
+                            <li><a href="#">Subject-wise Marks</a></li>
+                            <li><a href="#">Overall Performance</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Position in School -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Your Position in School</div>
+                    <div class="card-body">
+                        <p>Your current ranking based on marks:</p>
+                        <p><strong>Rank:</strong> #{{ student.rank }} out of {{ total_students }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Charts Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">Performance Analysis</div>
+                    <div class="card-body">
+                        <p>Track your academic performance with subject-wise analysis:</p>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {% block scripts %}
+        <script src="{% static 'hssm/js/index.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            var ctx = document.getElementById('performanceChart').getContext('2d');
+            var performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Math', 'Science', 'History', 'English', 'Physical Education'],
+                    datasets: [{
+                        label: 'Marks',
+                        data: [85, 90, 78, 88, 95],
+                        backgroundColor: 'rgba(28, 172, 196, 0.2)',
+                        borderColor: '#1cabc4',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        </script>
+    {% endblock %}
+{% endblock body %}
