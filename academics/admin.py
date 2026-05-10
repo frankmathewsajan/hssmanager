@@ -21,6 +21,8 @@ class AcademicGroupAdmin(admin.ModelAdmin):
     list_filter = ("stream",)
     filter_horizontal = ("core_subjects",)  # The magic UI trick for ManyToMany
 
+    search_fields = ("name", "code")
+
 
 @admin.register(SchoolClass)
 class SchoolClassAdmin(admin.ModelAdmin):
