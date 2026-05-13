@@ -1,26 +1,29 @@
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# 2026 Best Practice: Don't run as root
-RUN groupadd -r django && useradd -r -g django django
+# 1. Create user
+RUN groupadd -g 1000 django && useradd -m -u 1000 -g django django
 
 WORKDIR /app
 
-# Enable bytecode compilation for speed
-ENV UV_COMPILE_BYTECODE=1
-# Ensure uv uses the .venv in the project root
+RUN chown django:django /app
+
+ENV HOME=/home/django
+ENV UV_CACHE_DIR=/home/django/.cache/uv
 ENV UV_PROJECT_ENVIRONMENT=/app/.venv
+ENV UV_COMPILE_BYTECODE=1
 
 COPY pyproject.toml uv.lock ./
+RUN chown django:django pyproject.toml uv.lock
 
-# Mount the cache to speed up subsequent builds
-RUN --mount=type=cache,target=/root/.cache/uv \
+USER django
+RUN --mount=type=cache,target=/home/django/.cache/uv,uid=1000,gid=1000 \
     uv sync --frozen --no-install-project
 
+USER root
 COPY . .
-
-# Fix permissions
 RUN chown -R django:django /app
+
 USER django
 
 EXPOSE 8000
