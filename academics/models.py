@@ -1,5 +1,6 @@
 from django.db import models
 
+from core.models import TenantAwareModel
 from staff.models import Employee
 
 
@@ -28,7 +29,7 @@ class Subject(models.Model):
         return f"{self.code} - {self.name}"
 
 
-class AcademicGroup(models.Model):
+class AcademicGroup(TenantAwareModel):
     """
     Replaces tblGroup (The Academic side).
     e.g., 'Science with Biology', 'Commerce with Computer'.
@@ -49,7 +50,7 @@ class AcademicGroup(models.Model):
         return f"{self.stream}: {self.name}"
 
 
-class SchoolClass(models.Model):
+class SchoolClass(TenantAwareModel):
     """
     Replaces tblClass. Links a physical classroom to an Academic Group.
     We name it SchoolClass to avoid Python's 'class' keyword constraint.

@@ -1,23 +1,27 @@
-# Use a slim Python image
 FROM python:3.12-slim
-
-# Install uv directly from the official image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Set working directory
+# 2026 Best Practice: Don't run as root
+RUN groupadd -r django && useradd -r -g django django
+
 WORKDIR /app
 
-# Copy dependency files first (for caching)
+# Enable bytecode compilation for speed
+ENV UV_COMPILE_BYTECODE=1
+# Ensure uv uses the .venv in the project root
+ENV UV_PROJECT_ENVIRONMENT=/app/.venv
+
 COPY pyproject.toml uv.lock ./
 
-# Install dependencies without installing the project itself
-RUN uv sync --frozen --no-install-project
+# Mount the cache to speed up subsequent builds
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project
 
-# Copy the rest of the code
 COPY . .
 
-# Expose Django's port
-EXPOSE 8000
+# Fix permissions
+RUN chown -R django:django /app
+USER django
 
-# Run the server (Binding to 0.0.0.0 is critical for Docker)
+EXPOSE 8000
 CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,6 +1,9 @@
 # staff/models.py
 from django.db import models
 
+from django.conf import settings
+from core.models import TenantAwareModel
+
 
 class Designation(models.Model):
     """Replaces tblDesignation"""
@@ -34,7 +37,7 @@ class ScaleOfPay(models.Model):
         return self.scale_range
 
 
-class Employee(models.Model):
+class Employee(TenantAwareModel):
     """Replaces tblStaff. The master record for a staff member."""
 
     # -------------------------------------------------------------------------
@@ -102,6 +105,14 @@ class Employee(models.Model):
     address = models.TextField(blank=True)
     phone_no = models.CharField(max_length=20, blank=True)
     mobile_no = models.CharField(max_length=20, blank=True)
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="employee_profile",
+    )
 
     class Meta:
         ordering = ["designation__ui_priority", "name"]
