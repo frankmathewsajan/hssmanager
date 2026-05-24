@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # 1. Create the Pioneer School
         school, created = School.objects.get_or_create(
-            tenant_code="kaliyar", defaults={"name": "Kaliyar Govt. HSS"}
+            tenant_code="06018", defaults={"name": "Kaliyar Govt. HSS"}
         )
 
         if created:

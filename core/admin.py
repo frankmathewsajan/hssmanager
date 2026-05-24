@@ -10,6 +10,7 @@ from .models import (
     Religion,
     SecondLanguage,
     Status,
+    School,
 )
 
 
@@ -45,3 +46,9 @@ class CasteAdmin(admin.ModelAdmin):
     list_display = ("name", "community")
     list_filter = ("community",)
     search_fields = ("name",)
+
+
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = ("name", "tenant_code")
+    search_fields = ("name", "tenant_code")

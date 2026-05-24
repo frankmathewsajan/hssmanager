@@ -11,5 +11,6 @@ dependencies = [
     "django-jazzmin>=3.0.4",
     "django-ninja>=1.6.2",
     "django-ninja-jwt>=5.4.4",
+    "faker>=40.19.1",
     "psycopg[binary]>=3.3.4",
 ]

@@ -14,13 +14,13 @@ def get_current_school():
 class TenantMiddleware(MiddlewareMixin):
     """
     Intercepts every API request.
-    For now, it forces the tenant to be 'kaliyar'.
+    For now, it forces the tenant to be '06018'.
     Later, it will look at the user's JWT token to figure out their school.
     """
 
     def process_request(self, request):
-        # HARDCODED FOR NOW: Until we build Auth, pretend everyone is from Kaliyar
-        school = School.objects.filter(tenant_code="kaliyar").first()
+        # HARDCODED FOR NOW: Until we build Auth, pretend everyone is from 06018
+        school = School.objects.filter(tenant_code="06018").first()
 
         # Attach the school to the current thread AND the request object
         _thread_locals.school = school
