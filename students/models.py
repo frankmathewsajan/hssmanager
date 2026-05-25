@@ -20,6 +20,8 @@ from academics.models import SchoolClass
 
 
 class Student(TenantAwareModel):
+    """The Core Master Anchor: Handles core identification parameters."""
+
     ad_num = models.PositiveIntegerField(unique=True, blank=True)
     app_num = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=150, db_index=True)
@@ -76,6 +78,8 @@ class Student(TenantAwareModel):
 
 
 class StudentProfile(models.Model):
+    """The Demographic Layer: Holds sensitive PII context objects securely."""
+
     student = models.OneToOneField(
         Student, on_delete=models.CASCADE, related_name="profile"
     )
@@ -123,6 +127,8 @@ class StudentProfile(models.Model):
 
 
 class StudentAcademicRecord(models.Model):
+    """The Archival History Layer: Isolates metrics from student personal profiles."""
+
     student = models.OneToOneField(
         Student, on_delete=models.CASCADE, related_name="academic_record"
     )

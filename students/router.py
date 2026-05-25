@@ -1,15 +1,19 @@
+# backend/students/router.py
 from ninja import Router, Schema
-from typing import List
-from students.models import Student
-from academics.models import SchoolClass
-from core.models import School, Gender, Religion, Caste, Quota, Status
 from ninja_jwt.authentication import JWTAuth
-from django.shortcuts import get_object_or_404
+
+from typing import List
 from django.db import transaction
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
+from .models import Student
+from academics.models import SchoolClass
+from core.models import Gender, Religion, Caste, Quota, Status
+from core.security import check_permission
+
+# Instantiate the router. The global auth setup is passed down natively.
 students_router = Router(tags=["Students"], auth=JWTAuth())
-
-# --- SCHEMAS ---
 
 
 class StudentOut(Schema):
@@ -28,7 +32,6 @@ class StudentOut(Schema):
         return obj.class_now.name if obj.class_now else "Unassigned"
 
 
-# A pure explicit schema matching exactly what Next.js is sending
 class StudentIn(Schema):
     name: str
     dob: str
@@ -43,12 +46,18 @@ class StudentIn(Schema):
     study_status_id: int
 
 
-# --- ENDPOINTS ---
-
-
 @students_router.get("/", response=List[StudentOut])
 def list_students(request):
-    school_code = request.auth.employee_profile.school.tenant_code
+    """
+    Returns all students belonging to the authenticated tenant school.
+    Guarded by standard Django permissions framework.
+    """
+    # 1. Enforce the permission check natively using Django's auth backend
+    check_permission(request, "students.view_student")
+
+    # 2. Proceed with multi-tenant filtering safely
+    employee = request.auth.employee_profile
+    school_code = employee.school.tenant_code
     return Student.objects.select_related("gender", "class_now").filter(
         school__tenant_code=school_code
     )
@@ -56,13 +65,11 @@ def list_students(request):
 
 @students_router.post("/", response={201: StudentOut})
 def admit_student(request, data: StudentIn):
-    """
-    Admits a new student inside the correct school context.
-    Sidecar rows are safely managed by active background model signals.
-    """
-    user_school = request.auth.employee_profile.school
+    """Admits a new student inside the correct school context."""
+    # 1. Enforce the add permission cleanly
+    check_permission(request, "students.add_student")
 
-    # We turn the parsed Pydantic payload directly into a dictionary
+    user_school = request.auth.employee_profile.school
     create_params = data.dict()
     create_params["school"] = user_school
 
@@ -77,18 +84,19 @@ def admit_student(request, data: StudentIn):
                 else 1000
             )
 
-        # This invocation natively triggers handle_student_automation inside signals!
         student = Student.objects.create(**create_params)
-
-        # FIX: Explicit manual instantiation of StudentProfile and StudentAcademicRecord
-        # has been removed here to completely eliminate the 500 UniqueViolation crash loop.
 
     return 201, student
 
 
 @students_router.get("/meta/lookups", response={200: dict})
 def get_admission_metadata(request):
-    user_school = request.auth.employee_profile.school
+    """Utility endpoint providing lookup data for the frontend."""
+    employee = getattr(request.auth, "employee_profile", None)
+    if not employee:
+        raise Http404("Active employment context missing.")
+
+    user_school = employee.school
     return 200, {
         "classes": list(
             SchoolClass.objects.filter(school=user_school).values("id", "name")
