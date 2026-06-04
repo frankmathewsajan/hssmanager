@@ -12,5 +12,6 @@ dependencies = [
     "django-ninja>=1.6.2",
     "django-ninja-jwt>=5.4.4",
     "faker>=40.19.1",
+    "pdfplumber>=0.11.9",
     "psycopg[binary]>=3.3.4",
 ]
