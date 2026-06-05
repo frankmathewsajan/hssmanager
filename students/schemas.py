@@ -1,6 +1,7 @@
 # backend/students/schemas.py
 from ninja import Schema
 from typing import List, Optional
+from datetime import date
 
 
 class StudentOut(Schema):
@@ -38,11 +39,14 @@ class StudentIn(Schema):
 
 class HSCAPPreviewStudent(Schema):
     app_num: str
+    rank: str  # NEW
+    option: str  # NEW
     name: str
     reg_num: str
     dob: str
     gender: str
     second_language: str
+    fee_status: str  # NEW
 
 
 class HSCAPPreviewOut(Schema):
@@ -51,6 +55,28 @@ class HSCAPPreviewOut(Schema):
 
 
 class HSCAPBatchConfirmIn(Schema):
-    class_id: int
     ad_date: str
     students: List[HSCAPPreviewStudent]
+
+
+class AdmitCandidateIn(Schema):
+    candidate_id: int
+    class_id: int
+    is_permanent: bool  # True = Permanent Admission, False = Temporary (Waiting for higher option)
+
+
+class HscapCandidateOut(Schema):
+    id: int
+    app_num: str
+    name: str
+    reg_num: str
+    dob: date | None = None  # 👈 2. CHANGE 'str' TO 'date'
+    gender_text: str
+    second_language_text: str
+    target_class_name: str
+    status: str
+    allotment_round: str
+
+    @staticmethod
+    def resolve_target_class_name(obj):
+        return obj.target_class.name if obj.target_class else "Unassigned"

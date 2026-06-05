@@ -19,11 +19,50 @@ from core.models import (
 from academics.models import SchoolClass
 
 
+class HscapCandidate(TenantAwareModel):
+    """
+    STAGING AREA: Holds students from the HSCAP allotment lists until they physically arrive.
+    Prevents database pollution from students who leave for higher options.
+    """
+
+    STATUS_CHOICES = [
+        ("PENDING", "Pending Arrival"),
+        ("TEMP_ADMIT", "Temporary Admission (Awaiting Higher Option)"),
+        ("LEFT", "Left for Higher Option"),
+    ]
+
+    allotment_round = models.CharField(max_length=150, default="First Allotment")
+    app_num = models.CharField(max_length=20, db_index=True)
+    name = models.CharField(max_length=150)
+    reg_num = models.CharField(max_length=50, blank=True)
+    dob = models.DateField(null=True, blank=True)
+
+    # Raw text extracted straight from the CSV/PDF (handles typos safely)
+    gender_text = models.CharField(max_length=20, blank=True)
+    second_language_text = models.CharField(max_length=50, blank=True)
+
+    target_class = models.ForeignKey(
+        "academics.SchoolClass",
+        on_delete=models.SET_NULL,  # Changed from CASCADE
+        null=True,  # Added
+        blank=True,  # Added
+        related_name="pending_candidates",
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING")
+
+    class Meta:
+        # A student can only be pending in a school once
+        unique_together = ["school", "app_num"]
+
+    def __str__(self):
+        return f"{self.app_num} - {self.name} ({self.get_status_display()})"
+
+
 class Student(TenantAwareModel):
     """The Core Master Anchor: Handles core identification parameters."""
 
     ad_num = models.PositiveIntegerField(unique=True, blank=True)
-    app_num = models.IntegerField(null=True, blank=True)
+    app_num = models.BigIntegerField(null=True, blank=True)
     name = models.CharField(max_length=150, db_index=True)
     dob = models.DateField()
     gender = models.ForeignKey(Gender, on_delete=models.RESTRICT)
