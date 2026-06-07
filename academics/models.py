@@ -100,7 +100,7 @@ class SchoolClass(TenantAwareModel):
         return self.name
 
 
-class ClassTeacherAssignment(models.Model):
+class ClassTeacherAssignment(TenantAwareModel):
     """
     Absorbs tblClassDetails.
     Answers: Who teaches what to whom?

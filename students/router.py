@@ -1,4 +1,3 @@
-# backend/students/router.py
 from ninja import Router, File
 from ninja.files import UploadedFile
 from ninja_jwt.authentication import JWTAuth
@@ -77,25 +76,34 @@ def confirm_hscap_batch(request, payload: HSCAPBatchConfirmIn):
     user_school = request.auth.employee_profile.school
 
     success_count = 0
+    skipped_count = 0
+    
     with transaction.atomic():
         for student_data in payload.students:
+            app_num_clean = str(student_data.app_num).strip()
+            
+            # Idempotency Lock: Skip processing if they are already fully admitted
+            if Student.objects.filter(school=user_school, app_num=int(app_num_clean)).exists():
+                skipped_count += 1
+                continue
+
+            # Standardized filter query logic to handle explicit index race conditions safely
             HscapCandidate.objects.update_or_create(
                 school=user_school,
-                app_num=student_data.app_num,
+                app_num=app_num_clean,
                 defaults={
                     "name": student_data.name,
                     "reg_num": student_data.reg_num,
                     "dob": student_data.dob if student_data.dob else None,
                     "gender_text": student_data.gender,
                     "second_language_text": student_data.second_language,
-                    # REMOVED: "target_class": target_class,
                     "status": "PENDING",
                 },
             )
             success_count += 1
 
     return 201, {
-        "detail": f"Successfully queued {success_count} candidates in the waiting room."
+        "detail": f"Successfully queued {success_count} candidates. Skipped {skipped_count} active students."
     }
 
 
@@ -117,18 +125,15 @@ def list_staged_candidates(request):
 
 @students_router.post("/admit-candidate/", response={200: dict})
 def admit_physical_candidate(request, payload: AdmitCandidateIn):
-    """Step 3: The student physically arrived. Move from Staging to Permanent Database."""
+    """Step 3: The student physically arrived. Move from Staging to Permanent Database Pool."""
     check_permission(request, "students.add_student")
     user_school = request.auth.employee_profile.school
-    target_class = get_object_or_404(
-        SchoolClass, id=payload.class_id, school=user_school
-    )
+    
     candidate = get_object_or_404(
         HscapCandidate, id=payload.candidate_id, school=user_school
     )
 
     with transaction.atomic():
-        # Fuzzy matcher to handle OCR/CSV typos (e.g., "Make" -> Male, "Fem" -> Female)
         gender_str = candidate.gender_text.lower()
         if "f" in gender_str:
             gender = Gender.objects.filter(name__icontains="female").first()
@@ -142,17 +147,16 @@ def admit_physical_candidate(request, payload: AdmitCandidateIn):
             Status.objects.filter(name__iexact="Studying").first()
             or Status.objects.first()
         )
-        quota = Quota.objects.first()  # To be enriched via standard UI edits later
+        quota = Quota.objects.first()
         religion = Religion.objects.first()
         caste = Caste.objects.first()
 
-        # Sequentially generate the official Admission Number
         last_student = (
             Student.objects.filter(school=user_school).order_by("-ad_num").first()
         )
         current_ad_num = (last_student.ad_num + 1) if last_student else 1000
 
-        # Create the actual Student. Signals will automatically generate the empty Profile sidecars!
+        # Note: ad_class and class_now are omitted here so the student joins the unassigned pool
         new_student = Student.objects.create(
             ad_num=current_ad_num,
             app_num=int(candidate.app_num),
@@ -164,21 +168,17 @@ def admit_physical_candidate(request, payload: AdmitCandidateIn):
             ad_date=timezone.now().date(),
             ad_year="2026-27",
             ad_quota=quota,
-            ad_class=target_class,  #  UPDATED
-            class_now=target_class,  #  UPDATED
             second_language=slang,
             study_status=status,
             school=user_school,
         )
 
-        # Map 10th-grade Reg Number to the signal-generated academic sidecar
         acad_record = StudentAcademicRecord.objects.get(student=new_student)
         acad_record.sec_reg_num = candidate.reg_num
         acad_record.save()
 
-        # Resolve the Staging Candidate
         if payload.is_permanent:
-            candidate.delete()  # Perfect clearance
+            candidate.delete()
         else:
             candidate.status = "TEMP_ADMIT"
             candidate.save()
@@ -200,7 +200,7 @@ def get_admission_metadata(request):
             SchoolClass.objects.filter(school=user_school).values("id", "name")
         ),
         "genders": list(Gender.objects.values("id", "name")),
-        "religions": list(Religion.objects.values("id", "name")),
+        "rel religions": list(Religion.objects.values("id", "name")),
         "castes": list(Caste.objects.values("id", "name")),
         "quotas": list(Quota.objects.values("id", "name")),
         "statuses": list(Status.objects.values("id", "name")),

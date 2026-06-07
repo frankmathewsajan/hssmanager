@@ -79,8 +79,11 @@ class Student(TenantAwareModel):
     ad_class = models.ForeignKey(
         SchoolClass, on_delete=models.RESTRICT, related_name="admissions"
     )
+    ad_class = models.ForeignKey(
+        SchoolClass, on_delete=models.RESTRICT, related_name="admissions", null=True, blank=True
+    )
     class_now = models.ForeignKey(
-        SchoolClass, on_delete=models.RESTRICT, related_name="current_students"
+        SchoolClass, on_delete=models.RESTRICT, related_name="current_students", null=True, blank=True
     )
     class_roll_num = models.IntegerField(null=True, blank=True)
 
@@ -101,7 +104,13 @@ class Student(TenantAwareModel):
                         "parish": "A Parish can only be assigned to Catholic/Christian students."
                     }
                 )
-
+    def delete(self, using=None, keep_parents=False):
+        """Override delete to ensure soft deletion cascades to One-to-One sidecars."""
+        with transaction.atomic():
+            if hasattr(self, 'profile'):
+                self.profile.is_deleted = True # If profile inherits SoftDeleteModel
+            super().delete(using, keep_parents)
+            
     def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.ad_num:

@@ -61,7 +61,6 @@ class HSCAPBatchConfirmIn(Schema):
 
 class AdmitCandidateIn(Schema):
     candidate_id: int
-    class_id: int
     is_permanent: bool  # True = Permanent Admission, False = Temporary (Waiting for higher option)
 
 
