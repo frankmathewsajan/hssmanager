@@ -1,6 +1,9 @@
 from django.db import models, transaction
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from datetime import timedelta
 
+import uuid
 from core.models import (
     Gender,
     Parish,
@@ -18,6 +21,22 @@ from core.models import (
 )
 from academics.models import SchoolClass
 
+
+class DocumentUploadSession(models.Model):
+    """Ephemeral session to bridge PC and Mobile uploads securely."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    candidate = models.ForeignKey('HscapCandidate', on_delete=models.CASCADE)
+    document_type = models.CharField(max_length=50) # e.g., 'tc_document', 'conduct_cert'
+    
+    # The actual file once the phone uploads it
+    scanned_file = models.FileField(upload_to='temp_scans/', null=True, blank=True)
+    is_completed = models.BooleanField(default=False)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        # Sessions die after 15 minutes to prevent memory bloat and security leaks
+        return timezone.now() > self.created_at + timedelta(minutes=15)
 
 class HscapCandidate(TenantAwareModel):
     """
