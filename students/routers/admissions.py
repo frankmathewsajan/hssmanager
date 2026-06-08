@@ -1,3 +1,4 @@
+# backend/students/routers/admissions.py
 from ninja import Router, File
 from ninja.files import UploadedFile
 from typing import List
@@ -18,10 +19,12 @@ def parse_hscap_pdf(request, file: UploadedFile = File(...)):
     check_permission(request, "students.add_student")
     if not file.name.lower().endswith(".pdf"):
         return 400, {"detail": "Invalid file format. Please upload the official HSCAP PDF."}
+    
     parsed_data = extract_hscap_allotment(file.file.read())
     if "error" in parsed_data:
         return 400, {"detail": parsed_data["error"]}
     return 200, parsed_data
+
 
 @router.post("/confirm", response={201: dict})
 def confirm_hscap_batch(request, payload: HSCAPBatchConfirmIn):
@@ -31,29 +34,50 @@ def confirm_hscap_batch(request, payload: HSCAPBatchConfirmIn):
     skipped_count = 0
     
     with transaction.atomic():
+        # 1. State Reconciliation: Extract all incoming Application Numbers
+        incoming_app_nums = [str(s.app_num).strip() for s in payload.students]
+        
+        # 2. Purge the Ghosts: Delete any PENDING candidate not in the new PDF
+        stale_purged, _ = HscapCandidate.objects.filter(
+            school=user_school, 
+            status="PENDING"
+        ).exclude(app_num__in=incoming_app_nums).delete()
+
+        # 3. Process the active batch
         for student_data in payload.students:
             app_num_clean = str(student_data.app_num).strip()
+            
+            # Skip if they are already fully admitted in the main Student table
             if Student.objects.filter(school=user_school, app_num=int(app_num_clean)).exists():
                 skipped_count += 1
                 continue
 
+            # Safely create or update the staging candidate without IntegrityErrors
             HscapCandidate.objects.update_or_create(
-                school=user_school, app_num=app_num_clean,
-                defaults={
-                    "name": student_data.name, "reg_num": student_data.reg_num,
+                school=user_school, 
+                app_num=app_num_clean, # 👈 ONLY unique constraints go here
+                defaults={             # 👈 Variable data goes here
+                    "name": student_data.name, 
+                    "reg_num": student_data.reg_num,
                     "dob": student_data.dob if student_data.dob else None,
-                    "gender_text": student_data.gender, "second_language_text": student_data.second_language,
+                    "gender_text": student_data.gender, 
+                    "second_language_text": student_data.second_language,
                     "status": "PENDING",
                 }
             )
             success_count += 1
-    return 201, {"detail": f"Successfully queued {success_count} candidates. Skipped {skipped_count} active students."}
+            
+    return 201, {
+        "detail": f"Queued {success_count} candidates. Skipped {skipped_count} active. Purged {stale_purged} stale records."
+    }
+
 
 @router.get("/staging-queue", response=List[HscapCandidateOut])
 def list_staged_candidates(request):
     check_permission(request, "students.view_student")
     user_school = request.auth.employee_profile.school
     return HscapCandidate.objects.filter(school=user_school, status="PENDING").order_by("name")
+
 
 @router.post("/admit-physical/", response={200: dict})
 def admit_physical_candidate(request, payload: AdmitCandidateIn):
@@ -70,11 +94,16 @@ def admit_physical_candidate(request, payload: AdmitCandidateIn):
         last_student = Student.objects.filter(school=user_school).order_by("-ad_num").first()
         current_ad_num = (last_student.ad_num + 1) if last_student else 1000
 
+        # CRITICAL WARNING: This currently uses .first() for Religion, Caste, and Quota.
+        # You must update AdmitCandidateIn schema to accept the frontend form values and apply them here.
         new_student = Student.objects.create(
             ad_num=current_ad_num, app_num=int(candidate.app_num), name=candidate.name,
-            dob=candidate.dob, gender=gender, religion=Religion.objects.first(),
-            caste=Caste.objects.first(), ad_date=timezone.now().date(), ad_year="2026-27",
-            ad_quota=Quota.objects.first(), second_language=slang, study_status=status,
+            dob=candidate.dob, gender=gender, 
+            religion=Religion.objects.first(), # ⚠️ Needs payload mapping
+            caste=Caste.objects.first(),       # ⚠️ Needs payload mapping
+            ad_date=timezone.now().date(), ad_year="2026-27",
+            ad_quota=Quota.objects.first(),    # ⚠️ Needs payload mapping
+            second_language=slang, study_status=status,
             school=user_school,
         )
 
